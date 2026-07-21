@@ -1,0 +1,137 @@
+diff --git a/index.html b/index.html
+index 697d510..8a87a91 100644
+--- a/index.html
++++ b/index.html
+@@ -3,56 +3,63 @@
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <link rel="preconnect" href="https://fonts.googleapis.com">
++  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
++  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+   <title>AI Coding Assistant Security Assessment Playbook</title>
+   <style>
+     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+     /* ── Theme tokens ── */
+     :root {
+-      --bg-page:       #eef2f7;
+-      --bg-panel:      white;
+-      --bg-subtle:     #f7fafc;
+-      --bg-input:      white;
+-      --border:        #e2e8f0;
+-      --border-mid:    #cbd5e0;
+-      --text-primary:  #1a202c;
+-      --text-secondary:#4a5568;
+-      --text-muted:    #718096;
+-      --text-faint:    #a0aec0;
+-      --shadow-sm:     0 1px 4px rgba(0,0,0,0.08);
+-      --shadow-md:     0 2px 8px rgba(0,0,0,0.08);
+-      --thead-bg:      #2d3748;
+-      --thead-color:   white;
++      --bg-page:       #f8f9fa;
++      --bg-panel:      #ffffff;
++      --bg-subtle:     #f1f3f5;
++      --bg-input:      #ffffff;
++      --border:        #e5e7eb;
++      --border-mid:    #d1d5db;
++      --text-primary:  #0d0f12;
++      --text-secondary:#374151;
++      --text-muted:    #6b7280;
++      --text-faint:    #9ca3af;
++      --shadow-sm:     0 1px 3px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
++      --shadow-md:     0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
++      --thead-bg:      #1f2937;
++      --thead-color:   #ffffff;
+       --row-hover:     #f0f7ff;
+-      --row-active:    #ebf4ff;
+-      --step-desc-bg:  #fafbfc;
+-      --step-active-bg:#ebf8ff;
+-      --step-active-bd:#bee3f8;
++      --row-active:    #eff6ff;
++      --step-desc-bg:  #fafafa;
++      --step-active-bg:#eff6ff;
++      --step-active-bd:#bfdbfe;
++      --accent:        #0f4c81;
++      --accent-bg:     #eff6ff;
+     }
+     html.dark {
+-      --bg-page:       #0f172a;
+-      --bg-panel:      #1e293b;
+-      --bg-subtle:     #1a2538;
+-      --bg-input:      #1e293b;
+-      --border:        #3d5068;
+-      --border-mid:    #4e637d;
++      --bg-page:       #0d0f12;
++      --bg-panel:      #1a1d23;
++      --bg-subtle:     #22272e;
++      --bg-input:      #1a1d23;
++      --border:        #2d3748;
++      --border-mid:    #3d4a5c;
+       --text-primary:  #f1f5f9;
+-      --text-secondary:#e2e8f0;
+-      --text-muted:    #b8c8d8;
+-      --text-faint:    #8da5bb;
+-      --shadow-sm:     0 1px 4px rgba(0,0,0,0.4);
+-      --shadow-md:     0 2px 8px rgba(0,0,0,0.4);
+-      --thead-bg:      #0d1a2b;
++      --text-secondary:#cbd5e0;
++      --text-muted:    #94a3b8;
++      --text-faint:    #64748b;
++      --shadow-sm:     0 1px 3px rgba(0,0,0,0.4);
++      --shadow-md:     0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
++      --thead-bg:      #0d1117;
+       --thead-color:   #f1f5f9;
+       --row-hover:     #1e3a5f;
+       --row-active:    #1e3a5f;
+-      --step-desc-bg:  #1e293b;
++      --step-desc-bg:  #1a1d23;
+       --step-active-bg:#1e3a5f;
+-      --step-active-bd:#60a5fa;
++      --step-active-bd:#3b82f6;
++      --accent:        #3b82f6;
++      --accent-bg:     #1e3a5f;
+     }
+ 
+     body {
+-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
++      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+       background: var(--bg-page); color: var(--text-primary); min-height: 100vh; font-size: 14px;
+       transition: background 0.25s, color 0.25s;
+     }
+@@ -152,7 +159,7 @@
+     .tf-btn:hover .tf-name { color: #1a202c; }
+     .tf-btn:hover .tf-scope { color: #4a5568; }
+     .tf-btn.active { background: var(--tf-active, #7b341e); border-color: var(--tf-active, #7b341e); }
+-    .tf-btn .tf-id   { font-size: 0.72rem; font-weight: 800; color: var(--tf-stroke, #c05621); font-family: 'SF Mono','Fira Code',monospace; }
++    .tf-btn .tf-id   { font-size: 0.72rem; font-weight: 800; color: var(--tf-stroke, #c05621); font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace; }
+     .tf-btn.active .tf-id { color: rgba(255,255,255,0.85); }
+     .tf-btn .tf-name { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+     .tf-btn.active .tf-name { color: white; }
+@@ -199,7 +206,7 @@
+     .threat-sel-btn:hover { border-color: var(--ts-stroke,#3182ce); background: var(--ts-fill,#ebf8ff); }
+     .threat-sel-btn:hover .ts-name { color: #1a202c; }
+     .threat-sel-btn.active { background: var(--ts-active,#2b6cb0); border-color: var(--ts-active,#2b6cb0); }
+-    .threat-sel-btn .ts-id   { font-size: 0.72rem; font-weight: 800; color: var(--ts-stroke,#2b6cb0); font-family: 'SF Mono','Fira Code',monospace; }
++    .threat-sel-btn .ts-id   { font-size: 0.72rem; font-weight: 800; color: var(--ts-stroke,#2b6cb0); font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace; }
+     .threat-sel-btn.active .ts-id { color: rgba(255,255,255,0.85); }
+     .threat-sel-btn .ts-name { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+     .threat-sel-btn.active .ts-name { color: white; }
+@@ -223,7 +230,7 @@
+     .step-detail { display: none; margin-top: 10px; padding: 14px; background: var(--bg-panel); border: 1.5px solid var(--border); border-radius: 8px; }
+     .step-item.active .step-detail { display: block; }
+     .mitre-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+-    .mitre-tactic    { background: #e9d8fd; color: #553c9a; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 700; font-family: 'SF Mono','Fira Code',monospace; }
++    .mitre-tactic    { background: #e9d8fd; color: #553c9a; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 700; font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace; }
+     .mitre-technique { background: #bee3f8; color: #2c5282; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+     .step-mit-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin: 10px 0 6px; }
+     .step-mit-list { padding-left: 16px; }
+@@ -326,7 +333,7 @@
+     .filter-chip.all-chip:hover .fc-id { color: #1a202c; }
+     .filter-chip.all-chip.active .fc-id { color: white; }
+     .filter-chip.all-chip.active { background: #1a365d; border-color: #1a365d; }
+-    .filter-chip .fc-id   { font-size: 0.72rem; font-weight: 800; color: var(--fc-stroke,#2b6cb0); font-family: 'SF Mono','Fira Code',monospace; }
++    .filter-chip .fc-id   { font-size: 0.72rem; font-weight: 800; color: var(--fc-stroke,#2b6cb0); font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace; }
+     .filter-chip.active .fc-id { color: rgba(255,255,255,0.85); }
+     .filter-chip .fc-name { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+     .filter-chip.active .fc-name { color: white; }
