@@ -1,1 +1,1 @@
-﻿# Agentic-risk-assessment-reference
+﻿# Adversarial Risk Assessment Playbook
