@@ -95,26 +95,16 @@
       display: flex; align-items: center; gap: 10px;
       text-decoration: none; background: none; border: none; padding: 0; cursor: pointer; flex-shrink: 0;
     }
-    .site-logo-text { font-size: 13px; font-weight: 600; color: var(--text-inv); letter-spacing: 0.01em; }
+    .site-logo-text { font-size: 15px; font-weight: 700; color: var(--text-inv); letter-spacing: 0.01em; }
     .site-meta {
-      font-family: 'IBM Plex Mono', monospace;
       font-size: 10px; color: var(--text-inv-mid);
-      letter-spacing: 0.08em; text-align: right; line-height: 1.5;
+      letter-spacing: 0.04em; text-align: right; line-height: 1.5;
     }
 
     /* ── Hero ── */
     .hero { background: var(--navy); padding: 36px 24px 44px; border-bottom: 1px solid rgba(255,255,255,.06); }
     .hero-inner { max-width: 1400px; margin: 0 auto; }
-    .hero-eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--text-inv-mid); margin-bottom: 14px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .hero-eyebrow::before {
-      content: ''; display: inline-block; width: 20px; height: 1px;
-      background: #c0392b; flex-shrink: 0;
-    }
+
     .hero h1 {
       font-size: clamp(20px, 3.5vw, 30px); font-weight: 700; color: var(--text-inv);
       letter-spacing: -0.025em; line-height: 1.15; max-width: 640px; margin-bottom: 6px;
@@ -158,7 +148,7 @@
     .tab-panel.active { display: block; }
     .pane-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
     .pane-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 24px; }
-    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .section-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
     .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     /* ── Diagram toggle ── */
@@ -230,12 +220,17 @@
     .tf-btn.tf-muted { opacity: 0.38; }
     .tf-btn.tf-muted:hover { opacity: 0.6; }
     html.dark .tf-btn { background: #1e2a38; border-color: rgba(255,255,255,0.12); }
-    html.dark .tf-btn:hover { background: #263447; }
+    html.dark .tf-btn:hover { background: color-mix(in srgb, var(--tf-stroke, #d69e2e) 18%, #1a2536); }
+    html.dark .tf-btn.active { background: color-mix(in srgb, var(--tf-stroke, #d69e2e) 22%, #1a2536); box-shadow: 0 0 0 2px var(--tf-stroke, #d69e2e); }
     html.dark .threat-sel-btn { background: #1e2a38; border-color: rgba(255,255,255,0.12); }
-    html.dark .threat-sel-btn:hover { background: #263447; }
+    html.dark .threat-sel-btn:hover { background: color-mix(in srgb, var(--ts-stroke, #d69e2e) 18%, #1a2536); }
+    html.dark .threat-sel-btn.active { background: color-mix(in srgb, var(--ts-stroke, #d69e2e) 22%, #1a2536); box-shadow: 0 0 0 2px var(--ts-stroke, #d69e2e); }
     html.dark .filter-chip { background: #1e2a38; border-color: rgba(255,255,255,0.12); }
-    html.dark .filter-chip:hover { background: #263447; }
+    html.dark .filter-chip:hover { background: color-mix(in srgb, var(--fc-stroke, #d69e2e) 18%, #1a2536); }
+    html.dark .filter-chip.active { background: color-mix(in srgb, var(--fc-stroke, #d69e2e) 22%, #1a2536); box-shadow: 0 0 0 2px var(--fc-stroke, #d69e2e); }
     html.dark .filter-chip.all-chip { background: #1e2a38; }
+    html.dark .filter-chip.all-chip:hover { background: #263447; }
+    html.dark .filter-chip.all-chip.active { background: #1a2d44; box-shadow: 0 0 0 2px var(--accent); }
 
     /* Affected component list in info panel */
     .comp-list-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.875rem; color: var(--text-primary); }
@@ -620,31 +615,31 @@
         </p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:700;color:#b7791f;background:#fef3c7;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-001</span>
+            <span style="font-size:0.72rem;font-weight:700;color:#b7791f;background:#fef3c7;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-001</span>
             <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Instruction file with malicious prompts</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Malicious prompts embedded in instruction files (e.g. <code style="font-family:'IBM Plex Mono',monospace;font-size:0.78rem;">.cursorrules</code>, <code style="font-family:'IBM Plex Mono',monospace;font-size:0.78rem;">CLAUDE.md</code>) in cloned repositories direct the agent to execute attacker-defined actions. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:700;color:#276749;background:#d1fae5;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-002a</span>
+            <span style="font-size:0.72rem;font-weight:700;color:#276749;background:#d1fae5;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-002a</span>
             <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Malicious remote MCP server</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">A spoofed or attacker-controlled remote MCP server is configured in place of a legitimate one, injecting malicious tool responses into the agent context. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:700;color:#276749;background:#d1fae5;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-002b</span>
+            <span style="font-size:0.72rem;font-weight:700;color:#276749;background:#d1fae5;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-002b</span>
             <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Compromise of benign remote MCP server</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">A legitimate, already-trusted remote MCP server is compromised by an attacker who embeds malicious behaviour into its tools — exposing all users without any configuration change on their part. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:700;color:#6b46c1;background:#ede9fe;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-003</span>
+            <span style="font-size:0.72rem;font-weight:700;color:#6b46c1;background:#ede9fe;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-003</span>
             <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Compromised local MCP server</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">A trojanised local MCP server package exfiltrates sensitive files when the coding assistant grants it filesystem access during project initialisation. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:700;color:#0e7490;background:#ecfeff;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-004</span>
+            <span style="font-size:0.72rem;font-weight:700;color:#0e7490;background:#ecfeff;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-004</span>
             <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Malicious prompts in information sources</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Prompt injection payloads embedded in external content (e.g. GitHub Issues, documentation) are fetched by the agent and executed as instructions — creating malicious hooks or exfiltrating data. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:700;color:#4338ca;background:#e0e7ff;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-005</span>
+            <span style="font-size:0.72rem;font-weight:700;color:#4338ca;background:#e0e7ff;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-005</span>
             <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Skills with malicious instructions</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Malicious skill packages published to public repositories embed adversarial instructions that, when loaded into Claude Code, direct the agent to exfiltrate credentials or establish persistence. CLI agents only.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:700;color:#0e7490;background:#e0f2fe;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-006</span>
+            <span style="font-size:0.72rem;font-weight:700;color:#0e7490;background:#e0f2fe;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-006</span>
             <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Hooks with malicious actions</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Repositories pre-configured with malicious lifecycle hooks in <code style="font-family:'IBM Plex Mono',monospace;font-size:0.78rem;">settings.json</code> automatically execute attacker payloads when a user clones the repo and triggers an agent session event. CLI agents only.</div></div>
           </div>
         </div>
@@ -1135,6 +1130,15 @@ function renderDiag(svgEl, dtype, hlComps, hlTbs, interactive, hlMode, opts) {
   hlComps = hlComps || [];
   hlTbs   = hlTbs   || [];
   const def = DIAG[dtype];
+  const isDark = document.documentElement.classList.contains('dark');
+  const DARK_FILL_MAP = {
+    '#ebf8ff':'#0d1e2d', '#fffbeb':'#1e1a08', '#fff3e0':'#1e1308',
+    '#e6fffa':'#091e1b', '#faf5ff':'#140d22', '#ecfeff':'#091a1e',
+    '#f0fff4':'#091a0f', '#e0e7ff':'#0d1230', '#e0f2fe':'#091824',
+    '#fefce8':'#1a180a', '#fce7f3':'#20080f', '#fff0f8':'#1e0818',
+    '#f7fafc':'#131920',
+  };
+  function adaptFill(f) { return isDark ? (DARK_FILL_MAP[f] || '#1e2a38') : f; }
 
   svgEl.setAttribute('viewBox', def.vb);
   if (opts.responsive) {
@@ -1194,7 +1198,7 @@ function renderDiag(svgEl, dtype, hlComps, hlTbs, interactive, hlMode, opts) {
 
     const color = isHlTb   ? (hlMode==='arch' ? tbColor : hlMode==='green' ? '#38a169' : '#e53e3e')
                 : isHlComp ? (hlMode==='red' ? '#e53e3e' : '#3182ce')
-                : '#c8d2de';
+                : isDark ? '#2e4059' : '#c8d2de';
     const attackHl = hlMode === 'red' && (isHlTb || isHlComp);
     const mKey  = pfx + (attackHl                  ? 'arr-red-lg'
                         : isHlTb && hlMode==='arch' ? 'arr-tb-'+arr.tb
@@ -1239,7 +1243,7 @@ function renderDiag(svgEl, dtype, hlComps, hlTbs, interactive, hlMode, opts) {
       const lr = document.createElementNS(NS, 'rect');
       lr.setAttribute('x', mx-14); lr.setAttribute('y', my-10);
       lr.setAttribute('width','28'); lr.setAttribute('height','20'); lr.setAttribute('rx','4');
-      lr.setAttribute('fill',   hl2 ? hlC : (tbInfo ? tbInfo.fill   : '#f7fafc'));
+      lr.setAttribute('fill',   hl2 ? hlC : (tbInfo ? adaptFill(tbInfo.fill) : (isDark ? '#1e2a38' : '#f7fafc')));
       lr.setAttribute('stroke', hl2 ? hlC : (tbInfo ? tbInfo.stroke : '#718096'));
       lr.setAttribute('stroke-width','1.5');
       lg.appendChild(lr);
@@ -1247,7 +1251,7 @@ function renderDiag(svgEl, dtype, hlComps, hlTbs, interactive, hlMode, opts) {
       lt.textContent = arr.tb;
       lt.setAttribute('x', mx); lt.setAttribute('y', my+1);
       lt.setAttribute('text-anchor','middle'); lt.setAttribute('dominant-baseline','middle');
-      lt.setAttribute('fill',        hl2 ? 'white' : (tbInfo ? tbInfo.stroke : '#4a5568'));
+      lt.setAttribute('fill',        hl2 ? 'white' : (tbInfo ? tbInfo.stroke : (isDark ? '#8fa3bf' : '#4a5568')));
       lt.setAttribute('font-size',   '9');
       lt.setAttribute('font-weight', '800');
       lg.appendChild(lt);
@@ -1274,9 +1278,9 @@ function renderDiag(svgEl, dtype, hlComps, hlTbs, interactive, hlMode, opts) {
     rect.setAttribute('x', comp.x); rect.setAttribute('y', comp.y);
     rect.setAttribute('width', comp.w); rect.setAttribute('height', comp.h);
     rect.setAttribute('rx', comp.container ? '10' : '8');
-    const compFill = comp.container ? (cssVar('--bg-subtle') || comp.fill) : comp.fill;
+    const compFill = comp.container ? (cssVar('--bg-subtle') || comp.fill) : adaptFill(comp.fill);
     const nativeHl = isHl && opts.compHlStyle === 'native';
-    rect.setAttribute('fill',   isHl ? (nativeHl ? comp.stroke : '#fed7d7') : compFill);
+    rect.setAttribute('fill',   isHl ? (nativeHl ? comp.stroke : (isDark ? '#3d1a1a' : '#fed7d7')) : compFill);
     rect.setAttribute('stroke', isHl ? (nativeHl ? comp.stroke : '#e53e3e') : comp.stroke);
     rect.setAttribute('stroke-width', isHl ? '3' : (comp.container ? '2' : '1.5'));
     g.appendChild(rect);
@@ -1286,7 +1290,7 @@ function renderDiag(svgEl, dtype, hlComps, hlTbs, interactive, hlMode, opts) {
       lt.textContent = (comp.icon ? comp.icon + ' ' : '') + comp.label;
       lt.setAttribute('x', cxOf(comp)); lt.setAttribute('y', comp.y+24);
       lt.setAttribute('text-anchor','middle'); lt.setAttribute('dominant-baseline','middle');
-      lt.setAttribute('fill', nativeHl ? 'white' : (isHl ? '#742a2a' : (cssVar('--text-primary') || '#2d3748')));
+      lt.setAttribute('fill', nativeHl ? 'white' : (isHl ? (isDark ? '#fca5a5' : '#742a2a') : (cssVar('--text-primary') || '#2d3748')));
       lt.setAttribute('font-size','15');
       lt.setAttribute('font-weight', '700');
       g.appendChild(lt);
@@ -1300,7 +1304,7 @@ function renderDiag(svgEl, dtype, hlComps, hlTbs, interactive, hlMode, opts) {
         lt.textContent = line;
         lt.setAttribute('x', cxOf(comp)); lt.setAttribute('y', startY + i*lh);
         lt.setAttribute('text-anchor','middle'); lt.setAttribute('dominant-baseline','middle');
-        lt.setAttribute('fill', nativeHl ? 'white' : (isHl ? '#742a2a' : '#2d3748'));
+        lt.setAttribute('fill', nativeHl ? 'white' : (isHl ? (isDark ? '#fca5a5' : '#742a2a') : (isDark ? (cssVar('--text-primary') || '#e8edf5') : '#2d3748')));
         lt.setAttribute('font-size','12');
         lt.setAttribute('font-weight', '600');
         g.appendChild(lt);
@@ -2101,7 +2105,7 @@ function drawerEscHandler(e) {
 <footer style="background:var(--navy);border-top:1px solid rgba(255,255,255,.06);padding:28px 24px;">
   <div style="max-width:1400px;margin:0 auto;display:flex;flex-direction:column;gap:6px;">
     <div style="font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--text-inv);">AI Security Team &nbsp;·&nbsp; Cyber Security Engineering Centre &nbsp;·&nbsp; Cyber Security Agency of Singapore</div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-inv-mid);letter-spacing:0.04em;">© 2025 Cyber Security Agency of Singapore. All rights reserved.</div>
+    <div style="font-size:11px;color:var(--text-inv-mid);">© 2025 Cyber Security Agency of Singapore. All rights reserved.</div>
   </div>
 </footer>
 </body>
