@@ -141,6 +141,7 @@
     .tab-btn[data-tab="architecture"] { --tab-color: #0891b2; }
     .tab-btn[data-tab="attack-chain"] { --tab-color: #c0392b; }
     .tab-btn[data-tab="mitigations"]  { --tab-color: #16a34a; }
+    .tab-btn[data-tab="faq"]          { --tab-color: #b45309; }
 
     /* ── Content container ── */
     .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
@@ -248,6 +249,80 @@
     .lh-stat.unlikely { color: #276749; }
     .lh-stat.possible { color: #b7791f; }
 
+    /* ── Definition tooltip ── */
+    .def-term {
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 1px dotted var(--text-muted);
+      cursor: help;
+      position: relative;
+      display: inline-block;
+    }
+    .def-term .def-box {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      background: var(--navy);
+      color: var(--text-inv);
+      font-size: 0.8rem;
+      font-weight: 400;
+      line-height: 1.6;
+      padding: 10px 13px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      pointer-events: none;
+      transition: opacity 0.15s, visibility 0.15s;
+      z-index: 100;
+      text-align: left;
+      white-space: normal;
+    }
+    .def-term .def-box::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--navy);
+    }
+    .def-term:hover .def-box {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* ── FAQ accordion ── */
+    .faq-item { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .faq-item summary {
+      list-style: none;
+      padding: 14px 18px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      background: var(--bg-subtle);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '▼';
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .faq-item[open] summary::after { transform: rotate(180deg); color: var(--accent); }
+    .faq-item[open] summary { border-bottom: 1px solid var(--border); }
+    .faq-item summary:hover { background: var(--row-hover); }
+    .faq-answer { padding: 14px 18px; font-size: 0.875rem; color: var(--text-secondary); line-height: 1.8; }
+
     /* ── TB legend ── */
     .tb-legend { display: flex; flex-wrap: wrap; gap: 6px; }
     .tb-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-secondary); cursor: pointer; padding: 4px 10px; border-radius: 8px; border: 1px solid transparent; transition: all 0.15s; }
@@ -348,6 +423,7 @@
 
     .mit-table-panel { max-height: 680px; overflow: auto; }
     .mit-table-panel .table-wrap { overflow: visible; }
+    .mit-table-panel table { table-layout: fixed; width: 100%; }
     .mit-table-panel thead th:first-child { border-radius: 8px 0 0 0; }
     .mit-table-panel thead th:last-child  { border-radius: 0 8px 0 0; }
 
@@ -406,8 +482,8 @@
 
     .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-    thead th { background: var(--thead-bg); color: var(--thead-color); padding: 12px 16px; text-align: left; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 1; }
-    tbody td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; background: var(--bg-panel); color: var(--text-primary); }
+    thead th { background: var(--thead-bg); color: var(--thead-color); padding: 12px 14px; text-align: left; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 1; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; background: var(--bg-panel); color: var(--text-primary); }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr.data-row { cursor: pointer; transition: background 0.12s; }
     tbody tr.data-row:hover td { background: var(--row-hover); }
@@ -555,6 +631,7 @@
     <button class="tab-btn" data-tab="architecture"><span class="tab-dot"></span>System Architecture</button>
     <button class="tab-btn" data-tab="attack-chain"><span class="tab-dot"></span>Attack Path</button>
     <button class="tab-btn" data-tab="mitigations"><span class="tab-dot"></span>Mitigations</button>
+    <button class="tab-btn" data-tab="faq"><span class="tab-dot"></span>FAQ</button>
   </div>
 </nav>
 
@@ -571,13 +648,13 @@
       <div style="margin-bottom:36px;">
         <div class="section-label" style="margin-bottom:16px;">Agentic AI in Software Development</div>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:14px;">
-          Artificial intelligence has evolved at an unprecedented pace. In the span of a few years, large language models have moved from research curiosities to production-grade tools embedded in the daily workflows of software engineers worldwide. AI coding assistants — tools like GitHub Copilot, Cursor, Windsurf, and Claude Code — are now used to write, review, and refactor code across millions of codebases.
+          AI coding assistants are widely used by software developers to write, review, and refactor code. Unlike earlier AI tools focused on code completion, <span class="def-term">agentic AI coding assistants<span class="def-box">AI coding assistants that go beyond generating code suggestions. They can plan multi-step tasks, invoke external tools, read and write files, execute commands, and interact with remote services with minimal human intervention per action.</span></span> operate with greater autonomy.
         </p>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:14px;">
-          The latest generation of these tools goes beyond simple code completion. <strong style="color:var(--text-primary);">Agentic AI systems</strong> operate with a degree of autonomy that previous software generations did not — they plan multi-step tasks, invoke external tools, read and write files, execute terminal commands, and interact with remote services, all with minimal human intervention per action. This shift from passive assistant to active agent fundamentally changes the risk profile.
+          These systems can plan multi-step tasks, invoke external tools, read and write files, execute terminal commands, and interact with remote services with minimal human intervention per action. This introduces new security risks that differ from those in traditional software.
         </p>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;">
-          Traditional cybersecurity frameworks were built around securing deterministic software: defined inputs, predictable code paths, auditable state. Agentic AI introduces a new paradigm — one where the system's behaviour is shaped by natural language instructions that can originate from many sources, including attacker-controlled ones.
+          Traditional cybersecurity frameworks were designed for deterministic software with defined inputs and predictable code paths. <span class="def-term">Agentic AI<span class="def-box">AI systems that can independently plan and execute multi-step tasks to achieve a specified objective, using tools and data with minimal human intervention per action.</span></span> systems are instead directed by natural language instructions that can originate from many sources, including attacker-controlled ones.
         </p>
       </div>
 
@@ -585,13 +662,13 @@
       <div style="margin-bottom:36px;">
         <div class="section-label" style="margin-bottom:16px;">Novel Attack Surfaces</div>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:14px;">
-          The attack surfaces introduced by agentic AI coding assistants are qualitatively different from those in traditional software security. The LLM context window — the stream of text the model uses to reason and act — becomes the primary attack surface. Any content that flows into that context, whether from a repository file, an MCP server tool response, a documentation page, or a configuration file, can potentially carry adversarial instructions.
+          The primary attack surface in agentic AI is the LLM context window, the stream of text the model processes to reason and act. Any content that flows into this context, whether from a repository file, an MCP server tool response, a documentation page, or a configuration file, can potentially carry adversarial instructions.
         </p>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:14px;">
-          This gives rise to a class of attacks with no direct analogue in conventional security: <strong style="color:var(--text-primary);">prompt injection</strong>, where malicious instructions are embedded in content the agent is expected to process, and <strong style="color:var(--text-primary);">supply chain compromise via AI context</strong>, where trusted tools or repositories are weaponised to influence agent behaviour rather than exploit binary vulnerabilities.
+          This enables two categories of attack: <span class="def-term">prompt injection<span class="def-box">An attack where malicious instructions are embedded in content the agent is expected to process, such as a repository file, documentation page, or tool response. The agent reads and acts on these instructions as if they were legitimate.</span></span>, and <span class="def-term">supply chain compromise via AI context<span class="def-box">An attack where trusted tools, packages, or repositories are manipulated to carry adversarial content. Rather than exploiting binary vulnerabilities, the attacker influences agent behaviour by poisoning the content the agent consumes.</span></span>.
         </p>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;">
-          The extensibility of these systems — through plugin ecosystems, Model Context Protocol (MCP) servers, instruction files, skills, and lifecycle hooks — creates multiple trust boundaries, each of which is a potential entry point. Securing agentic AI requires reasoning about trust at each of these boundaries in a way that conventional application security does not.
+          Agentic AI coding assistants are also highly extensible, supporting <span class="def-term">plugin ecosystems<span class="def-box">Packages that extend the coding agent's capabilities by bundling together skills, hooks, and MCP components. Plugins are typically installed from a marketplace and may include custom instructions and automated actions.</span></span>, <span class="def-term">Model Context Protocol (MCP) servers<span class="def-box">MCP is an open standard that allows coding agents to connect to external tools and data sources. An MCP server exposes a set of callable tools that the agent can invoke, such as querying a database, browsing the web, or interacting with a third-party service.</span></span>, <span class="def-term">instruction files<span class="def-box">Configuration files placed in a repository that provide persistent instructions to the coding assistant. The agent reads these automatically at the start of a session, making them a potential injection surface if the repository has been tampered with.</span></span>, <span class="def-term">skills<span class="def-box">Packaged instruction sets that extend the coding agent's behaviour for specific tasks. Skills are loaded into the agent's context and can direct how it reasons, what tools it uses, and how it responds. They are a potential injection surface if sourced from untrusted repositories.</span></span>, and <span class="def-term">lifecycle hooks<span class="def-box">Scripts configured to run automatically at defined points in the agent's session, such as before or after a tool is used, or at session start. Hooks execute outside the LLM's control and can interact directly with the host system.</span></span>. Each extension point is a potential entry point for attackers, requiring trust to be assessed at every <span class="def-term">trust boundary<span class="def-box">A trust boundary is the point where data or control passes between two components with different levels of trust. In agentic AI systems, these boundaries (such as between the user and the agent, or the agent and an external tool) are where adversarial content can be introduced.</span></span>.
         </p>
       </div>
 
@@ -599,13 +676,10 @@
       <div style="margin-bottom:36px;">
         <div class="section-label" style="margin-bottom:16px;">About This Handbook</div>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:14px;">
-          This handbook was developed by the <strong style="color:var(--text-primary);">Cyber Security Agency of Singapore</strong> to support security practitioners and developers in assessing and mitigating the security risks of AI coding assistant deployments. It references the <a href="https://www.csa.gov.sg/resources/publications/addendum-on-securing-ai-systems/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px;">CSA Addendum on Securing AI Systems</a> as broader guidance, and applies that context to a specific agentic AI archetype: the AI coding assistant.
-        </p>
-        <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:14px;">
-          The scope is deliberately focused on AI coding assistants — tools like GitHub Copilot, Cursor, Windsurf, and Claude Code — as they represent one of the most widely deployed categories of agentic AI in enterprise environments today. This focus allows the trust boundaries, attack vectors, and mitigations described here to be concrete and directly actionable, rather than generic to agentic AI at large.
+          This handbook was developed by the <strong style="color:var(--text-primary);">Cyber Security Agency of Singapore</strong> to support <span class="def-term">security practitioners<span class="def-box">Professionals responsible for assessing, monitoring, and managing cybersecurity risks within an organisation. This includes security engineers, analysts, architects, and risk managers.</span></span> and <span class="def-term">developers<span class="def-box">Software engineers and technical staff who build, maintain, or operate systems that use agentic AI coding assistants as part of their development workflow.</span></span> in assessing and mitigating security risks in agentic AI coding assistant deployments. It is intended to be read alongside the <a href="https://www.csa.gov.sg/resources/publications/addendum-on-securing-ai-systems/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px;">CSA Addendum on Securing AI Systems</a>, applying its guidance to a specific agentic AI archetype: the agentic AI coding assistant.
         </p>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;">
-          It provides a structured, interactive handbook covering the system architecture of common AI coding assistant deployments, the attack vectors that have been identified, adversarial attack paths mapped to MITRE ATLAS tactics and techniques, and the mitigations applicable at each trust boundary.
+          <strong style="color:var(--text-primary);">Coverage:</strong> This handbook applies to agentic AI coding assistants as a widely deployed category of agentic AI in enterprise environments. It addresses the system architecture of common deployments, identified attack vectors with adversarial attack paths mapped to <a href="https://atlas.mitre.org/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px;">MITRE ATLAS</a> tactics and techniques, and mitigations applicable at each trust boundary.
         </p>
       </div>
 
@@ -618,7 +692,7 @@
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <div style="font-size:0.72rem;font-weight:700;color:#7c3aed;background:#ede9fe;padding:3px 10px;border-radius:4px;flex-shrink:0;margin-top:1px;width:130px;text-align:center;">Introduction</div>
-            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Establishes the context, scope, and threat taxonomy of this handbook. Recommended as the starting point for all readers regardless of technical background.</div>
+            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Establishes the context, coverage, and attack vectors addressed in this handbook. Recommended as the starting point for all readers regardless of technical background.</div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <div style="font-size:0.72rem;font-weight:700;color:#0891b2;background:#ecfeff;padding:3px 10px;border-radius:4px;flex-shrink:0;margin-top:1px;width:130px;text-align:center;">System Architecture</div>
@@ -626,11 +700,11 @@
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <div style="font-size:0.72rem;font-weight:700;color:#c0392b;background:#fef2f2;padding:3px 10px;border-radius:4px;flex-shrink:0;margin-top:1px;width:130px;text-align:center;">Attack Path</div>
-            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Details each identified threat as a step-by-step adversarial chain, mapped to MITRE ATLAS tactics and techniques. Select a threat from the left panel to trace the full attack path. The objective of this tab is to convey what the agent can be induced to do under each threat, not the technical mechanics of exploitation.</div>
+            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Details each identified attack vector as a step-by-step adversarial chain, mapped to <a href="https://atlas.mitre.org/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px;">MITRE ATLAS</a> tactics and techniques. Select an attack vector from the left panel to trace the full attack path. The objective of this tab is to convey what the agent can be induced to do under each attack vector, not the technical mechanics of exploitation.</div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <div style="font-size:0.72rem;font-weight:700;color:#16a34a;background:#dcfce7;padding:3px 10px;border-radius:4px;flex-shrink:0;margin-top:1px;width:130px;text-align:center;">Mitigations</div>
-            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Provides concrete, actionable controls mapped to each threat and trust boundary. This tab is the primary reference for security practitioners and risk owners conducting assessments or defining organisational policy. Controls may be filtered by threat or trust boundary to support targeted review.</div>
+            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Provides concrete, actionable controls mapped to each attack vector and trust boundary, drawn from the <a href="https://www.csa.gov.sg/resources/publications/addendum-on-securing-ai-systems/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px;">CSA Addendum on Securing AI Systems</a>. This tab is the primary reference for security practitioners and risk owners conducting assessments or defining organisational policy. Controls may be filtered by attack vector or trust boundary to support targeted review.</div>
           </div>
         </div>
       </div>
@@ -639,15 +713,15 @@
       <div style="margin-bottom:8px;">
         <div class="section-label" style="margin-bottom:16px;">Identified Attack Vectors</div>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
-          Seven attack vectors have been identified across IDE-based and CLI-based agentic coding assistant deployments. Each is detailed in the Attack Path tab with step-by-step adversarial chains and applicable mitigations.
+          Seven attack vectors have been identified across IDE-based and CLI-based agentic AI coding assistant deployments. Each is detailed in the Attack Path tab with step-by-step adversarial chains and applicable mitigations. These represent currently identified vectors based on mainstream deployment patterns; the list is not exhaustive and may be updated as deployment practices and attacker techniques evolve.
         </p>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
-          The threats documented here are scoped to cases where there is an active adversary exploiting the system — someone deliberately manipulating the agent's inputs to cause it to take harmful actions. Risks such as insecure code generation are usage risks rather than threats: they arise from the limitations of the model itself, not from adversarial intent, and are therefore out of scope for this threat-based assessment. This distinction ensures that the mitigations described are targeted and actionable against a defined attacker, rather than guidance on general safe use.
+          <strong style="color:var(--text-primary);">Attack vector criteria:</strong> Only cases where there is an active adversary manipulating the agent's inputs to cause harmful actions are included. Risks such as insecure code generation are not included, as they arise from model limitations rather than adversarial intent. This ensures that mitigations are targeted against a defined attacker rather than guidance on general safe use.
         </p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <span style="font-size:0.72rem;font-weight:700;color:#b7791f;background:#fef3c7;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-001</span>
-            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Instruction file with malicious prompts</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Malicious prompts embedded in instruction files (e.g. <code style="font-family:'IBM Plex Mono',monospace;font-size:0.78rem;">.cursorrules</code>, <code style="font-family:'IBM Plex Mono',monospace;font-size:0.78rem;">CLAUDE.md</code>) in cloned repositories direct the agent to execute attacker-defined actions. Applies to IDE and CLI agents.</div></div>
+            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Instruction file with malicious prompts</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Malicious prompts embedded in instruction files in cloned repositories direct the agent to execute attacker-defined actions. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <span style="font-size:0.72rem;font-weight:700;color:#276749;background:#d1fae5;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-002a</span>
@@ -655,7 +729,7 @@
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <span style="font-size:0.72rem;font-weight:700;color:#276749;background:#d1fae5;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-002b</span>
-            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Compromise of benign remote MCP server</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">A legitimate, already-trusted remote MCP server is compromised by an attacker who embeds malicious behaviour into its tools — exposing all users without any configuration change on their part. Applies to IDE and CLI agents.</div></div>
+            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Compromise of benign remote MCP server</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">A legitimate, already-trusted remote MCP server is compromised by an attacker who embeds malicious behaviour into its tools, exposing all users without any configuration change on their part. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <span style="font-size:0.72rem;font-weight:700;color:#6b46c1;background:#ede9fe;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-003</span>
@@ -663,11 +737,11 @@
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <span style="font-size:0.72rem;font-weight:700;color:#0e7490;background:#ecfeff;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-004</span>
-            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Malicious prompts in information sources</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Prompt injection payloads embedded in external content (e.g. GitHub Issues, documentation) are fetched by the agent and executed as instructions — creating malicious hooks or exfiltrating data. Applies to IDE and CLI agents.</div></div>
+            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Malicious prompts in information sources</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Prompt injection payloads embedded in external content (e.g. GitHub Issues, documentation) are fetched by the agent and executed as instructions, creating malicious hooks or exfiltrating data. Applies to IDE and CLI agents.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <span style="font-size:0.72rem;font-weight:700;color:#4338ca;background:#e0e7ff;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-005</span>
-            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Skills with malicious instructions</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Malicious skill packages published to public repositories embed adversarial instructions that, when loaded into Claude Code, direct the agent to exfiltrate credentials or establish persistence. CLI agents only.</div></div>
+            <div><div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px;">Skills with malicious instructions</div><div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Malicious skill packages published to public repositories embed adversarial instructions that, when loaded into a CLI-based coding agent, direct the agent to exfiltrate credentials or establish persistence. CLI agents only.</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <span style="font-size:0.72rem;font-weight:700;color:#0e7490;background:#e0f2fe;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:1px;">T-006</span>
@@ -682,11 +756,11 @@
   <!-- ═══ TAB 1: ARCHITECTURE ═══ -->
   <div class="tab-panel" id="panel-architecture">
     <div class="pane-title">System Architecture</div>
-    <div class="pane-desc">This tab maps the technical components of an AI coding assistant deployment and the trust boundaries that separate them. Understanding the architecture is the foundation for threat modelling — each boundary represents a potential attack surface where trust assumptions can be violated.<br><br><strong>How to use:</strong> Toggle between IDE-based agents (e.g. GitHub Copilot, Cursor, Windsurf) and CLI-based agents (e.g. Claude Code) to see how the architecture differs. Click any component or trust boundary label to view its description and associated attack vectors. Use the attack vector filter chips to highlight which components are affected by a specific attack vector.</div>
+    <div class="pane-desc">This tab maps the technical components of an AI coding assistant deployment and the trust boundaries that separate them. Understanding the architecture is the foundation for threat modelling — each boundary represents a potential attack surface where trust assumptions can be violated.<br><br><strong>How to use:</strong> Toggle between IDE-based agents and CLI-based agents to see how the architecture differs. Click any component or trust boundary label to view its description and associated attack vectors. Use the attack vector filter chips to highlight which components are affected by a specific attack vector.</div>
     <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
       <div class="diagram-toggle" style="margin-bottom:0;">
         <button class="dtoggle-btn active" data-diagram="ide">IDE-based Agents</button>
-        <button class="dtoggle-btn" data-diagram="cli">CLI-based Agents (Claude Code)</button>
+        <button class="dtoggle-btn" data-diagram="cli">CLI-based Agents</button>
       </div>
     </div>
     <div class="threat-filter-section">
@@ -820,11 +894,11 @@
           <table>
             <thead>
               <tr>
-                <th style="width:54%">Mitigation</th>
-                <th style="width:12%">Type</th>
-                <th style="width:12%">Attack Vector</th>
-                <th style="width:12%">Trust Boundary</th>
-                <th style="width:10%"></th>
+                <th style="width:40%">Mitigation</th>
+                <th style="width:13%">Type</th>
+                <th style="width:22%">Attack Vector</th>
+                <th style="width:18%">Trust Boundary</th>
+                <th style="width:7%"></th>
               </tr>
             </thead>
             <tbody id="mit-tbody"></tbody>
@@ -834,6 +908,112 @@
 
     </div>
   </div>
+
+  <div class="tab-panel" id="panel-faq">
+    <div class="pane-title">Frequently Asked Questions</div>
+    <div class="pane-desc">Common questions about the scope, content, and application of this handbook.</div>
+
+    <div style="max-width:820px;margin-top:28px;">
+
+      <!-- Group: About the document -->
+      <div style="margin-bottom:32px;">
+        <div class="section-label" style="margin-bottom:16px;">About This Handbook</div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <details class="faq-item">
+            <summary>Who is this handbook for?</summary>
+            <div class="faq-answer">This handbook is intended for security practitioners and developers who are assessing, deploying, or securing agentic AI coding assistants in an enterprise environment. It assumes some familiarity with software security concepts, though the Introduction tab is designed to be accessible regardless of technical background.</div>
+          </details>
+          <details class="faq-item">
+            <summary>How does this relate to the CSA Addendum on Securing AI Systems?</summary>
+            <div class="faq-answer">This handbook is intended to be read alongside the <a href="https://www.csa.gov.sg/resources/publications/addendum-on-securing-ai-systems/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px;">CSA Addendum on Securing AI Systems</a>, which provides broader guidance on securing agentic AI across different system types. This handbook applies that guidance to a specific archetype (the agentic AI coding assistant), with concrete trust boundaries, attack vectors, and mitigations specific to that deployment context.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Will the attack vectors and mitigations be updated over time?</summary>
+            <div class="faq-answer">Yes. The seven attack vectors documented here represent currently identified vectors based on mainstream deployment patterns. As deployment practices evolve and attacker techniques mature, additional vectors may be identified and included. Mitigations will also be updated to reflect new tooling and security controls as they become available.</div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Group: About the technology -->
+      <div style="margin-bottom:32px;">
+        <div class="section-label" style="margin-bottom:16px;">About the Technology</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <details class="faq-item">
+            <summary>What is the difference between an IDE-based and CLI-based coding agent?</summary>
+            <div class="faq-answer">IDE-based coding agents are integrated directly into a developer's code editor, providing assistance within the editing environment. CLI-based coding agents operate from the terminal and have direct access to the local filesystem, shell commands, and lifecycle hooks. CLI-based agents generally have a broader attack surface due to their deeper system access and support for skills and hooks, which introduce additional extension points not present in most IDE-based deployments.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Why does the LLM context window matter for security?</summary>
+            <div class="faq-answer">The LLM context window is the stream of text the model processes to reason and act. Unlike traditional software that executes deterministic instructions, an agentic AI coding assistant acts on whatever is in its context, including content from external sources. If an attacker can introduce malicious instructions into any content the agent processes (a file, a tool response, a webpage), those instructions may be treated as legitimate and acted upon. This makes the context window the central attack surface.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Does this apply to all AI coding assistants, or only specific products?</summary>
+            <div class="faq-answer">The handbook applies to any agentic AI coding assistant that can invoke external tools, read and write files, execute commands, and interact with remote services. It is not specific to any product. The two deployment archetypes (IDE-based and CLI-based) are representative of how most commercial and open-source agentic AI coding assistants are deployed today.</div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Group: About scope and risk -->
+      <div style="margin-bottom:32px;">
+        <div class="section-label" style="margin-bottom:16px;">Scope and Risk</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <details class="faq-item">
+            <summary>Does using an agentic AI coding assistant automatically put my organisation at risk?</summary>
+            <div class="faq-answer">Not automatically. The attack vectors documented here require specific conditions to be exploitable. For example, a developer cloning a malicious repository, connecting to an untrusted MCP server, or loading an unvetted skill package. Organisations that apply the primary mitigations and establish appropriate policies significantly reduce their exposure. The purpose of this handbook is to make those conditions and the corresponding controls explicit.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Why is insecure code generation not included as an attack vector?</summary>
+            <div class="faq-answer">Insecure code generation arises from the limitations of the underlying model. It is an outcome of how the model was trained, not the result of an active adversary exploiting the system. This handbook is scoped to adversarial attack vectors, where an attacker deliberately manipulates the agent's inputs to cause harmful actions. Guidance on managing model output quality, including insecure code generation, falls within the broader CSA Addendum on Securing AI Systems.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Are all seven attack vectors equally likely to be exploited?</summary>
+            <div class="faq-answer">No. Each attack vector has an assessed likelihood of exploitation before and after mitigations are applied, visible in the Mitigations tab when filtering by a single attack vector. In general, vectors that rely on a developer cloning a malicious repository or connecting to an attacker-controlled server have a higher likelihood than those requiring compromise of an already-trusted service.</div>
+          </details>
+          <details class="faq-item">
+            <summary>My organisation does not use MCP servers. Which attack vectors still apply?</summary>
+            <div class="faq-answer">T-002a, T-002b, and T-003 (the three MCP-related attack vectors) would not apply directly. T-001 (Instruction file with malicious prompts), T-004 (Malicious prompts in information sources), T-005 (Skills with malicious instructions), and T-006 (Hooks with malicious actions) remain relevant depending on the features enabled in your deployment. You can use the Architecture tab to filter by attack vector and see which components are affected.</div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Group: About mitigations -->
+      <div style="margin-bottom:32px;">
+        <div class="section-label" style="margin-bottom:16px;">Mitigations</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <details class="faq-item">
+            <summary>Where should my organisation start with mitigations?</summary>
+            <div class="faq-answer">Start with the primary mitigations. These are the controls assessed to have the most direct impact on reducing exploitability across the relevant attack vectors. Use the Mitigations tab to filter by the attack vectors most relevant to your deployment and focus on primary controls first. Supplementary controls can then be layered on to further reduce residual risk.</div>
+          </details>
+          <details class="faq-item">
+            <summary>What is the difference between primary and supplementary mitigations?</summary>
+            <div class="faq-answer">Primary mitigations directly address the exploit path of an attack vector and should be considered foundational controls. Supplementary mitigations provide additional defence in depth. They reduce residual risk or limit blast radius but are not sufficient on their own to prevent exploitation. Both types are valuable; the distinction is intended to help organisations prioritise implementation.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Do primary mitigations need to be in place before supplementary ones are considered?</summary>
+            <div class="faq-answer">Not necessarily, though it is generally advisable to implement primary controls first given their direct impact on exploitability. In some cases, a supplementary control may be easier to implement quickly and still provide meaningful risk reduction while primary controls are being planned. The two classifications are not sequential. They reflect priority and directness of impact, not a strict implementation order.</div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Group: Deployment -->
+      <div style="margin-bottom:8px;">
+        <div class="section-label" style="margin-bottom:16px;">Deployment</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <details class="faq-item">
+            <summary>Does this apply to cloud-hosted deployments, on-premises deployments, or both?</summary>
+            <div class="faq-answer">Both. The attack vectors and trust boundaries described in this handbook apply regardless of whether the underlying LLM is accessed via a cloud API or hosted on-premises. The key factors are the capabilities of the coding agent (what tools it can invoke, what files it can access) and the trust boundaries in the deployment, not the hosting model of the LLM itself.</div>
+          </details>
+          <details class="faq-item">
+            <summary>How do I know which trust boundaries are relevant to my deployment?</summary>
+            <div class="faq-answer">Use the System Architecture tab to review the trust boundary model for IDE-based and CLI-based deployments. Each trust boundary is labelled (TB1 to TB6) and describes the components it separates and the risks it introduces. Boundaries that involve components your organisation does not use (for example, TB4 and TB5 if you have no local MCP servers) can be deprioritised. The Mitigations tab can also be filtered by trust boundary to focus on relevant controls.</div>
+          </details>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 
@@ -867,7 +1047,7 @@ const COMPONENTS = {
   },
   'instruction-file': {
     name: 'Instruction File',
-    desc: 'Configuration files (.cursorrules, .windsurfrules, CLAUDE.md, .github/copilot-instructions.md) that provide persistent instructions to the coding assistant. Some IDEs auto-read these on session start without user confirmation, making them a critical injection surface.',
+    desc: 'Configuration files that provide persistent instructions to the coding assistant. Some IDEs auto-read these on session start without user confirmation, making them a critical injection surface.',
     threats: ['T-001']
   },
   'inbuilt-tools': {
@@ -897,12 +1077,12 @@ const COMPONENTS = {
   },
   skills: {
     name: 'Skills',
-    desc: 'Skill files (skill.md and associated files) extending Claude Code capabilities via the /skills system. Customised instructions to guide agent reasoning and tool use for specific tasks.',
+    desc: 'Skill files (skill.md and associated files) extending coding agent capabilities via the /skills system. Customised instructions to guide agent reasoning and tool use for specific tasks.',
     threats: ['T-005']
   },
   hooks: {
     name: 'Hooks',
-    desc: 'Pre/post execution hooks configured in settings.json that trigger automatically at lifecycle points in Claude Code (session start, pre-tool-use, post-tool-use). Custom logic runs before, during, or after specific agent actions.',
+    desc: 'Pre/post execution hooks configured in settings.json that trigger automatically at lifecycle points in the coding agent (session start, pre-tool-use, post-tool-use). Custom logic runs before, during, or after specific agent actions.',
     threats: ['T-006']
   },
   plugins: {
@@ -921,7 +1101,7 @@ const COMPONENTS = {
 const THREATS_DATA = [
   {
     id:'T-001', name:'Instruction file with malicious prompts',
-    desc:'Attacker creates compromised instruction files (e.g. .cursorrules, CLAUDE.md) in a GitHub repository. When the user clones the repository and interacts with the coding assistant, the LLM reads the malicious prompts and executes them — ultimately installing a reverse shell on the user\'s machine.',
+    desc:'Attacker creates compromised instruction files in a repository. When the user clones the repository and interacts with the coding assistant, the LLM reads the malicious prompts and executes them, ultimately installing a reverse shell on the user\'s machine.',
     likelihoodBefore:'Likely', likelihoodAfter:'Unlikely', diagrams:['ide','cli'],
     mainColor:'#d69e2e', mainFill:'#fef3c7', activeColor:'#b7791f'
   },
@@ -951,7 +1131,7 @@ const THREATS_DATA = [
   },
   {
     id:'T-005', name:'Skills with malicious instructions',
-    desc:'Threat actors publish malicious skill packages (skill.md and associated files) with embedded adversarial instructions to public marketplaces or repositories. When loaded into Claude Code, the skill directs the coding assistant to perform unauthorised actions — such as exfiltrating credentials or creating a reverse shell.',
+    desc:'Threat actors publish malicious skill packages (skill.md and associated files) with embedded adversarial instructions to public marketplaces or repositories. When loaded into a CLI-based coding agent, the skill directs the coding assistant to perform unauthorised actions - such as exfiltrating credentials or creating a reverse shell.',
     likelihoodBefore:'Likely', likelihoodAfter:'Unlikely', diagrams:['cli'],
     mainColor:'#4f46e5', mainFill:'#e0e7ff', activeColor:'#4338ca'
   },
@@ -1025,10 +1205,10 @@ const ATTACK_CHAINS = {
   },
   'T-005': {
     name:'T-005: Skills with Malicious Instructions', diagramType:'cli',
-    desc:'A threat actor publishes a malicious skill package to a public marketplace. When loaded into Claude Code, the embedded adversarial instructions direct the coding assistant to perform unauthorised actions — credential exfiltration or reverse shell creation.',
+    desc:'A threat actor publishes a malicious skill package to a public marketplace. When loaded into a CLI-based coding agent, the embedded adversarial instructions direct the coding assistant to perform unauthorised actions - credential exfiltration or reverse shell creation.',
     steps:[
       { step:1, desc:'Threat actor creates a malicious skill package with embedded adversarial instructions and publishes it to a public marketplace or repository.', tactics:['Resource Development'], techniques:['AML.T0079 — Stage Capabilities'], mits:['Ensure skill files are sourced only from trusted, verified repositories.','Perform automated scanning of all downloaded skill files for malicious instructions.'], hl:['skills'] },
-      { step:2, desc:'User downloads the skill package and incorporates it into Claude Code via the /skills system.', tactics:['Execution'], techniques:['AML.T0011 — User Execution'], mits:['Review skill files manually before incorporation.','Restrict skill installation to approved/vetted sources.'], hl:['user','skills'], hlTbs:['TB1'] },
+      { step:2, desc:'User downloads the skill package and incorporates it into the coding agent via the /skills system.', tactics:['Execution'], techniques:['AML.T0011 — User Execution'], mits:['Review skill files manually before incorporation.','Restrict skill installation to approved/vetted sources.'], hl:['user','skills'], hlTbs:['TB1'] },
       { step:3, desc:'Coding Assistant reads and loads the skill file, internalising the embedded malicious instructions.', tactics:['Execution','Persistence'], techniques:['AML.T0051.001 — Indirect LLM Prompt Injection','AML.T0081 — Modify AI Agent Configuration'], mits:['Prompt the agent to self-reflect and flag suspicious instructions in loaded skill files.','Sandbox the environment to limit blast radius.'], hl:['coding-agent','skills','llm'], hlTbs:['TB2'] },
       { step:4, desc:'Malicious instructions direct the Coding Assistant to perform unauthorised actions (credential exfiltration, malicious scripts, or encoded commands).', tactics:['Execution','Exfiltration'], techniques:['AML.T0050 — Command and Scripting Interpreter','AML.T0054 — Exfiltration via AI Infrastructure'], mits:['Configure coding assistant to disallow automatic execution of commands not explicitly authorised.','Perform logging of all tool invocations and file operations.'], hl:['coding-agent','llm'], hlTbs:['TB2'], reverseArrows:true },
       { step:5, desc:'Coding Assistant prompts user for authorisation to execute the action (or executes silently if auto-approval is enabled).', tactics:['Execution'], techniques:['AML.T0011 — User Execution'], mits:['Require explicit human-in-the-loop approval for all system-level operations.','Sandbox the coding assistant environment.'], hl:['user','coding-agent'], hlTbs:['TB1'], reverseArrows:true },
@@ -1077,7 +1257,7 @@ const MITIGATIONS_DATA = [
 ══════════════════════════════════════════════════════ */
 const DIAG = {
   ide: {
-    title: 'IDE-based Coding Agent', subtitle: 'e.g. GitHub Copilot, Windsurf, Cursor',
+    title: 'IDE-based Coding Agent', subtitle: 'IDE-integrated AI assistant',
     vb:'0 0 900 408', w:900, h:408,
     comps: {
       user:              { x:250, y:8,   w:220, h:50,  label:'User',               fill:'#ebf8ff', stroke:'#3182ce', container:false, icon:'👤' },
@@ -1101,11 +1281,11 @@ const DIAG = {
     ]
   },
   cli: {
-    title: 'CLI-based Coding Agent', subtitle: 'e.g. Claude Code',
+    title: 'CLI-based Coding Agent', subtitle: 'Terminal-based AI assistant',
     vb:'0 0 900 415', w:900, h:415,
     comps: {
       user:              { x:250, y:8,   w:220, h:50,  label:'User',               fill:'#ebf8ff', stroke:'#3182ce', container:false, icon:'👤' },
-      'coding-agent':    { x:50,  y:108, w:620, h:165, label:'Claude Code Agent',  fill:'#f7fafc', stroke:'#4a5568', container:true,  icon:'🤖' },
+      'coding-agent':    { x:50,  y:108, w:620, h:165, label:'Coding Agent',       fill:'#f7fafc', stroke:'#4a5568', container:true,  icon:'🤖' },
       'instruction-file':{ x:100, y:155, w:160, h:44,  label:'Instruction Files',  fill:'#fffbeb', stroke:'#d69e2e', container:false, icon:'📄' },
       skills:            { x:280, y:155, w:160, h:44,  label:'Skills',             fill:'#e0e7ff', stroke:'#4f46e5', container:false, icon:'⚡' },
       hooks:             { x:460, y:155, w:160, h:44,  label:'Hooks',              fill:'#e0f2fe', stroke:'#0891b2', container:false, icon:'🪝' },
@@ -1911,9 +2091,9 @@ function renderMit() {
     const priLabel = m.pri === 'primary' ? 'Primary' : 'Supplementary';
     const priClass = m.pri === 'primary' ? 'badge-primary' : 'badge-supplementary';
     tr.innerHTML = `
-      <td style="font-weight:600;color:var(--text-primary);">${m.m}</td>
+      <td style="font-weight:600;color:var(--text-primary);word-break:break-word;">${m.m}</td>
       <td><span class="pri-badge ${priClass}">${priLabel}</span></td>
-      <td>${m.ts.map(t => { const tc2=threatColors(t); return `<span style="display:inline-block;white-space:nowrap;background:${tc2.fill};color:${tc2.active};border-radius:5px;padding:2px 7px;font-size:0.75rem;font-weight:700;margin:1px;">${t}</span>`; }).join(' ')}</td>
+      <td style="white-space:normal;">${m.ts.map(t => { const tc2=threatColors(t); return `<span style="display:inline-block;white-space:nowrap;background:${tc2.fill};color:${tc2.active};border-radius:5px;padding:2px 7px;font-size:0.75rem;font-weight:700;margin:1px 1px 2px;">${t}</span>`; }).join(' ')}</td>
       <td><span style="display:inline-block;background:${tf};color:${tc};border:1px solid ${tc};border-radius:5px;padding:3px 9px;font-size:0.8rem;font-weight:700;">${m.tb}</span></td>
       <td style="text-align:center;padding-right:12px;">
         <span class="mit-expand-icon" id="mit-icon-${idx}">▼</span>
