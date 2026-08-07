@@ -879,10 +879,9 @@
             <thead>
               <tr>
                 <th style="width:40%">Mitigation</th>
-                <th style="width:13%">Type</th>
+                <th style="width:15%">Type</th>
                 <th style="width:22%">Attack Vector</th>
-                <th style="width:18%">Trust Boundary</th>
-                <th style="width:7%"></th>
+                <th style="width:23%">Trust Boundary</th>
               </tr>
             </thead>
             <tbody id="mit-tbody"></tbody>
@@ -2041,12 +2040,9 @@ function renderMit() {
     const priClass = m.pri === 'technical' ? 'badge-technical' : m.pri === 'process' ? 'badge-process' : 'badge-people';
     tr.innerHTML = `
       <td style="font-weight:600;color:var(--text-primary);word-break:break-word;">${m.m}</td>
-      <td><span class="pri-badge ${priClass}">${priLabel}</span></td>
+      <td style="padding-left:10px;padding-right:10px;"><span class="pri-badge ${priClass}">${priLabel}</span></td>
       <td style="white-space:normal;">${m.ts.map(t => { const tc2=threatColors(t); return `<span style="display:inline-block;white-space:nowrap;background:${tc2.fill};color:${tc2.active};border-radius:5px;padding:2px 7px;font-size:0.75rem;font-weight:700;margin:1px 1px 2px;">${t}</span>`; }).join(' ')}</td>
-      <td><span style="display:inline-block;background:${tf};color:${tc};border:1px solid ${tc};border-radius:5px;padding:3px 9px;font-size:0.8rem;font-weight:700;">${m.tb}</span></td>
-      <td style="text-align:center;padding-right:12px;">
-        <span class="mit-expand-icon" id="mit-icon-${idx}">▼</span>
-      </td>`;
+      <td><div style="display:flex;align-items:center;justify-content:space-between;"><span style="display:inline-block;background:${tf};color:${tc};border:1px solid ${tc};border-radius:5px;padding:3px 9px;font-size:0.8rem;font-weight:700;">${m.tb}</span><span class="mit-expand-icon" id="mit-icon-${idx}" style="margin-right:14px;">▼</span></div></td>`;
 
     // Expandable detail row
     const expandTr = document.createElement('tr');
@@ -2054,7 +2050,7 @@ function renderMit() {
     expandTr.id = `mit-expand-${idx}`;
     expandTr.style.display = 'none';
     expandTr.innerHTML = `
-      <td colspan="5">
+      <td colspan="4">
         <div class="mit-expand-content">
           <div class="mit-expand-label">Example Implementation</div>
           <p>${m.ex}</p>
