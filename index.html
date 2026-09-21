@@ -1008,7 +1008,7 @@
   <!-- ═══ TAB: RISK ASSESSMENT ═══ -->
   <div class="tab-panel" id="panel-risk-assessment">
     <div class="pane-title">Risk Assessment</div>
-    <div class="pane-desc">This tab provides the reference risk matrix and scoring scales for rating the severity of the attack vectors identified in this handbook. Combine an <strong>impact</strong> score with a <strong>likelihood</strong> score to arrive at a risk rating (Low, Medium, Medium-High, or High) for a given attack scenario.<br><br><strong>Note on unattended deployments:</strong> the residual likelihood ratings assigned to each attack vector assume an attended deployment with a developer present during the session. Where an agent runs unattended, three Level 0 controls are replaced by weaker compensating substitutes, and residual likelihood should be reassessed upward accordingly rather than inherited from this handbook.</div>
+    <div class="pane-desc">This tab provides the reference risk matrix and scoring scales for rating the severity of the attack vectors identified in this handbook. Combine an <strong>impact</strong> score with a <strong>likelihood</strong> score to arrive at a risk rating (Low, Medium, Medium-High, or High) for a given attack scenario.<br><br><strong>Note on unattended deployments:</strong> the residual likelihood ratings assigned to each attack vector assume an attended deployment with a developer present during the session. Where an agent runs unattended, three Level 0 controls are replaced by weaker compensating substitutes: <a class="mit-link" onclick="gotoMitigation('Require human verification before agent-initiated file changes or commands take effect');return false;">M-011 human verification</a>, <a class="mit-link" onclick="gotoMitigation('Ensure the agent can be interrupted immediately at any point during execution');return false;">M-015 immediate interruptibility</a>, and <a class="mit-link" onclick="gotoMitigation('Require human approval before a new skill, hook, or external component is activated');return false;">M-019 approval before activation</a>. Residual likelihood should be reassessed upward accordingly rather than inherited from this handbook.</div>
 
     <div class="attack-overview">
       <h3>How to rate a risk</h3>
@@ -1195,24 +1195,6 @@
         </table>
 
         <p style="margin-top:14px;font-size:0.8rem;color:var(--text-secondary);line-height:1.6;"><strong style="color:var(--text-primary);">Reading the last column.</strong> For most capabilities, removing the capability removes the vector. Two are worth noting. Local shell (C3) is needed by every vector except T-004, which is the one chain that reaches execution without it: the agent only writes a file, and git runs that file on the next commit. Repository and CI write (C9) does not add a vector at all, but it raises the impact of every vector, because the agent's output reaches shared branches and build pipelines.</p>
-      </div>
-
-      <!-- DEPLOYMENT MODE (separate from capability: it governs controls, not impact) -->
-      <div class="rm-section">
-        <div class="rm-section-title">Deployment Mode</div>
-        <div class="rm-section-sub">Record this separately from capability. Capability tells you how severe the impact could be; deployment mode tells you which controls you can actually rely on.</div>
-
-        <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.7;">An agent runs <strong style="color:var(--text-primary);">attended</strong> when a developer starts the session and is present while it works, and <strong style="color:var(--text-primary);">unattended</strong> when it is started by a pipeline event, an issue assignment, or a schedule. The same components and trust boundaries apply either way, and every attack vector remains relevant, so applicability and impact do not change.</p>
-
-        <p style="margin-top:12px;font-size:0.8rem;color:var(--text-secondary);line-height:1.7;">What changes is which controls are available. Three Level 0 controls assume a person is present and cannot be implemented as written when one is not. Each has a weaker substitute, shown against the control in the Mitigations tab.</p>
-
-        <ul style="margin:12px 0 0 0;padding:0;list-style:none;font-size:0.8rem;color:var(--text-secondary);line-height:1.5;">
-          <li style="margin-bottom:7px;"><span class="mit-id">M-011</span>Require human verification before agent-initiated file changes or commands take effect</li>
-          <li style="margin-bottom:7px;"><span class="mit-id">M-015</span>Ensure the agent can be interrupted immediately at any point during execution</li>
-          <li><span class="mit-id">M-019</span>Require human approval before a new skill, hook, or external component is activated</li>
-        </ul>
-
-        <p style="margin-top:14px;font-size:0.8rem;color:var(--text-secondary);line-height:1.7;">Because these three carry a substantial share of the overall risk reduction, the residual likelihood ratings in this handbook assume attended operation. An unattended deployment should reassess residual likelihood rather than inherit it. Also record which identity the agent runs as when unattended, since it should be distinct from any individual developer's credentials so that its authority can be scoped and revoked on its own.</p>
       </div>
 
       <!-- 5×5 MATRIX -->
@@ -1460,7 +1442,7 @@
           </details>
           <details class="faq-item">
             <summary>Does this handbook apply to agents that run without a developer present, such as CI/CD-triggered or scheduled agents?</summary>
-            <div class="faq-answer">Yes, with one important qualification. The architecture is unchanged: an agent triggered by a pipeline event, an issue assignment, or a schedule uses the same components and crosses the same trust boundaries (TB1 to TB6) as one driven by a developer at a workstation, and every attack vector remains applicable. What changes is the principal on TB1. In an attended deployment that principal is a person; in an unattended deployment it is a pipeline trigger operating under a workload identity, which should be distinct from any individual developer's credentials so that the agent's authority can be scoped and revoked on its own.<br><br>Three Level 0 controls assume a person is present and cannot be implemented as written when one is not. Select any of them to open the control in the Mitigations tab, where its full compensating substitute is shown.<ul><li><a class="mit-link" onclick="gotoMitigation('Require human verification before agent-initiated file changes or commands take effect');return false;">Require human verification before agent-initiated file changes or commands take effect</a>. Per-action approval becomes pre-merge review: the agent works on a branch, and its output lands through a pull request that the identity it runs as can neither approve nor merge.</li><li><a class="mit-link" onclick="gotoMitigation('Ensure the agent can be interrupted immediately at any point during execution');return false;">Ensure the agent can be interrupted immediately at any point during execution</a>. Interruption cannot depend on someone watching, so it is replaced by a hard run timeout, caps on tool and API calls, and run-level cancellation available to a third party.</li><li><a class="mit-link" onclick="gotoMitigation('Require human approval before a new skill, hook, or external component is activated');return false;">Require human approval before a new skill, hook, or external component is activated</a>. Activation is settled before the run rather than during it: dynamic activation is disabled and the permitted component set is pinned by version or digest in a source-controlled manifest.</li></ul><br>Because these three controls account for a substantial share of the overall risk reduction, the residual likelihood ratings in this handbook assume attended operation. Unattended deployments should reassess residual likelihood rather than inherit it.</div>
+            <div class="faq-answer">Yes, with one important qualification. The architecture is unchanged: an agent triggered by a pipeline event, an issue assignment, or a schedule uses the same components and crosses the same trust boundaries (TB1 to TB6) as one driven by a developer at a workstation, and every attack vector remains applicable. What changes is the principal on TB1. In an attended deployment that principal is a person; in an unattended deployment it is a pipeline trigger operating under a workload identity, which should be distinct from any individual developer's credentials so that the agent's authority can be scoped and revoked on its own.<br><br>Three Level 0 controls assume a person is present and cannot be implemented as written when one is not. Select any of them to open the control in the Mitigations tab, where its full compensating substitute is shown.<ul><li><span class="mit-id">M-011</span><a class="mit-link" onclick="gotoMitigation('Require human verification before agent-initiated file changes or commands take effect');return false;">Require human verification before agent-initiated file changes or commands take effect</a>. Per-action approval becomes pre-merge review: the agent works on a branch, and its output lands through a pull request that the identity it runs as can neither approve nor merge.</li><li><span class="mit-id">M-015</span><a class="mit-link" onclick="gotoMitigation('Ensure the agent can be interrupted immediately at any point during execution');return false;">Ensure the agent can be interrupted immediately at any point during execution</a>. Interruption cannot depend on someone watching, so it is replaced by a hard run timeout, caps on tool and API calls, and run-level cancellation available to a third party.</li><li><span class="mit-id">M-019</span><a class="mit-link" onclick="gotoMitigation('Require human approval before a new skill, hook, or external component is activated');return false;">Require human approval before a new skill, hook, or external component is activated</a>. Activation is settled before the run rather than during it: dynamic activation is disabled and the permitted component set is pinned by version or digest in a source-controlled manifest.</li></ul><br>Because these three controls account for a substantial share of the overall risk reduction, the residual likelihood ratings in this handbook assume attended operation. Unattended deployments should reassess residual likelihood rather than inherit it.</div>
           </details>
           <details class="faq-item">
             <summary>How do I know which trust boundaries are relevant to my deployment?</summary>
@@ -2542,11 +2524,26 @@ function gotoMitigation(name) {
   if (!row) return;
   row.click();  // expands the row, highlights it, and syncs the diagram and TB legend
 
-  // Scroll inside the table panel only, so it does not fight the tab's own page scroll
+  // Two scrolls are needed. The row has to come into view inside the table panel,
+  // and the panel itself has to come into view on the page: the tab switch has already
+  // started a smooth scroll to the top of the tab, which leaves the table below the fold.
   requestAnimationFrame(() => {
     const panel = document.querySelector('.mit-table-panel');
     if (!panel) return;
+
+    // Panel-relative offset. Both rects shift together with the page, so this stays
+    // correct even while the tab's own scroll animation is still running.
     panel.scrollTop += row.getBoundingClientRect().top - panel.getBoundingClientRect().top - 60;
+
+    // Retarget the page at the table, clearing the sticky tab bar. Adding scrollY to a
+    // viewport-relative top gives the absolute document position, which the in-flight
+    // animation does not affect.
+    const bar = document.querySelector('.tab-bar-wrap');
+    const clearance = (bar ? bar.offsetHeight : 0) + 16;
+    window.scrollTo({
+      top: Math.max(0, panel.getBoundingClientRect().top + window.scrollY - clearance),
+      behavior: 'smooth'
+    });
   });
 }
 
