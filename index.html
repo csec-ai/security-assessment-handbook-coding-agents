@@ -1071,7 +1071,7 @@
             </tr>
             <tr>
               <td class="rm-scale-score">C3</td>
-              <td class="rm-scale-rating">Local shell</td>
+              <td class="rm-scale-rating">Agent command execution</td>
               <td>Whether the agent can run commands on the host, and whether those commands are confined to an isolated environment or reach the developer's machine directly.
                 <details class="cap-mits">
                   <summary>Related controls</summary>
@@ -1193,8 +1193,6 @@
             </tr>
           </tbody>
         </table>
-
-        <p style="margin-top:14px;font-size:0.8rem;color:var(--text-secondary);line-height:1.6;"><strong style="color:var(--text-primary);">Reading the last column.</strong> For most capabilities, removing the capability removes the vector. Two are worth noting. Local shell (C3) is needed by every vector except T-004, which is the one chain that reaches execution without it: the agent only writes a file, and git runs that file on the next commit. Repository and CI write (C9) does not add a vector at all, but it raises the impact of every vector, because the agent's output reaches shared branches and build pipelines.</p>
       </div>
 
       <!-- 5×5 MATRIX -->
