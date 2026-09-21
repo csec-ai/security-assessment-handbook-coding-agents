@@ -253,8 +253,10 @@
 
     /* Stable control identifier, quotable in procurement and audit records */
     .mit-id { display:inline-block; font-family:'SF Mono',Menlo,Consolas,monospace; font-size:0.7rem; font-weight:700;
-              letter-spacing:0.02em; color:var(--text-muted); background:var(--bg-subtle); border:1px solid var(--border);
+              letter-spacing:0.02em; color:var(--text-secondary); background:var(--bg-subtle); border:1px solid var(--border);
               border-radius:4px; padding:1px 5px; margin-right:8px; vertical-align:1px; }
+    /* --text-secondary rather than --text-muted: at 0.7rem on --bg-subtle the muted
+       ink gives 3.58:1 in light mode, under the 4.5:1 the handbook holds itself to. */
 
     /* Likelihood row */
     .lh-stat { font-weight: 700; }
@@ -639,7 +641,9 @@
     .rm-steps strong { color: var(--text-primary); }
     .rm-section { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-sm); padding: 22px 24px; margin-bottom: 20px; }
     .rm-section-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; margin-bottom: 4px; }
-    .rm-section-sub { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+    /* --text-muted fails AA at this size in light mode (3.87:1 on panel); these
+       subtitles carry scoring guidance, so they take the secondary ink instead */
+    .rm-section-sub { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
 
     .rm-matrix-scroll { overflow-x: auto; }
     .rm-matrix { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 0.8rem; table-layout: fixed; }
@@ -664,6 +668,20 @@
     .rm-scale-table td.rm-scale-score { font-family: 'IBM Plex Mono', monospace; font-weight: 700; color: var(--text-secondary); width: 8%; }
     .rm-scale-table tr.rm-scale-group td { border-top: 2px solid var(--border-mid); }
     .rm-scale-table tr.rm-scale-group:first-child td { border-top: none; }
+
+    /* Compact in-cell disclosure for the capability checklist's related controls.
+       Same no-JS details/summary idiom as the FAQ accordions, sized to sit in a table row. */
+    .cap-mits { margin-top: 9px; }
+    .cap-mits summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+                        font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 600;
+                        letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); user-select: none; }
+    .cap-mits summary::-webkit-details-marker { display: none; }
+    .cap-mits summary::after { content: '▼'; font-size: 0.55rem; color: var(--text-faint); transition: transform 0.2s ease; }
+    .cap-mits[open] summary::after { transform: rotate(180deg); color: var(--accent); }
+    .cap-mits summary:hover { text-decoration: underline; }
+    .cap-mits ul { margin: 9px 0 0 0; padding: 0; list-style: none; }
+    .cap-mits li { margin-bottom: 6px; line-height: 1.5; }
+    .cap-mits li:last-child { margin-bottom: 0; }
 
     .rm-pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; }
 
@@ -996,14 +1014,206 @@
       <h3>How to rate a risk</h3>
       <ol class="rm-steps">
         <li><strong>Define the risk scenario.</strong> Take one attack vector from the Attack Path tab and describe how the threat event could affect the agent in your environment, including what the agent could be induced to do and the resulting adverse consequence. Assess one scenario at a time.</li>
-        <li><strong>Assess impact.</strong> Work down the Impact Scale and take the highest rating where any single criterion is met. Determine the impact based on the potential consequence in your deployment, taking into account the assets, systems and data that the agent can access or affect. This is why the handbook does not assign an impact rating to individual attack vectors.</li>
+        <li><strong>Assess impact.</strong> Work down the Impact Scale and take the highest rating where any single criterion is met. Determine the impact based on the potential consequence in your deployment, taking into account the capabilities of the agent, and the assets, systems and data that the agent can access or affect. This is why the handbook does not assign an impact rating to individual attack vectors.</li>
         <li><strong>Assess likelihood.</strong> Assess the likelihood that the threat event could successfully occur under the conditions of your deployment. Rate the scenario against all three dimensions of the Likelihood Scale and take the highest of the three. The likelihood ratings shown for each vector in the Mitigations tab provide a starting reference and should be adjusted to reflect your deployment context.</li>
         <li><strong>Determine inherent risk.</strong> Use the risk matrix to determine the inherent risk rating from the assessed impact and likelihood, before taking controls into account.</li>
         <li><strong>Apply recommended mitigations and determine residual risk.</strong> Apply the relevant controls from the Mitigations tab and reassess the likelihood and impact, where applicable. Use the risk matrix to determine the residual risk and record both the inherent and residual risk ratings.</li>
       </ol>
+      <p style="margin-top:12px;font-size:0.875rem;color:var(--text-secondary);line-height:1.65;">Before working through these steps, use the Capability Checklist below to record what your agent can do. This determines which attack vectors apply to your deployment and how far their consequences reach.</p>
     </div>
 
     <div class="rm-wrap">
+
+      <!-- CAPABILITY CHECKLIST -->
+      <div class="rm-section">
+        <div class="rm-section-title">Capability Checklist</div>
+        <div class="rm-section-sub">What an agent can do matters more than where it runs. An agent inside a code editor that can run shell commands and load third-party extensions carries more risk than a command-line agent that cannot do either. Record what your agent can do here, then use those answers when assessing impact below.</div>
+
+        <table class="rm-scale-table">
+          <thead>
+            <tr>
+              <th style="width:7%">Code</th>
+              <th style="width:19%">Capability</th>
+              <th>What to determine</th>
+              <th style="width:17%">Related attack vectors</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rm-scale-score">C1</td>
+              <td class="rm-scale-rating">Filesystem read</td>
+              <td>Which paths the agent can read, and whether it can reach beyond the project directory into home directories, credential stores, or other repositories.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-001</span>Detect malicious content in instruction files, skill files, and hook configurations before they are loaded</li>
+                  <li><span class="mit-id">M-010</span>Isolate the agent's operating environment to contain the impact of malicious actions</li>
+                  <li><span class="mit-id">M-013</span>Block agent access to sensitive files and folders unless strictly required</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-001</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C2</td>
+              <td class="rm-scale-rating">Filesystem write</td>
+              <td>Which paths the agent can write to. Pay particular attention to places another program later runs code from, such as the repository's own <code style="font-family:'IBM Plex Mono',monospace;font-size:0.76rem;">.git/hooks</code> directory, build scripts, or pipeline definitions.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-011</span>Require human verification before agent-initiated file changes or commands take effect</li>
+                  <li><span class="mit-id">M-016</span>Maintain recoverable copies of files and repositories the agent can modify</li>
+                  <li><span class="mit-id">M-018</span>Detect vulnerabilities in agent-generated code before it is deployed</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-004</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C3</td>
+              <td class="rm-scale-rating">Local shell</td>
+              <td>Whether the agent can run commands on the host, and whether those commands are confined to an isolated environment or reach the developer's machine directly.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-010</span>Isolate the agent's operating environment to contain the impact of malicious actions</li>
+                  <li><span class="mit-id">M-011</span>Require human verification before agent-initiated file changes or commands take effect</li>
+                  <li><span class="mit-id">M-012</span>Maintain logs of agent interactions and executed actions, with alerting on anomalous activity</li>
+                  <li><span class="mit-id">M-015</span>Ensure the agent can be interrupted immediately at any point during execution</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-001, T-002a, T-002b, T-003, T-005, T-006</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C4</td>
+              <td class="rm-scale-rating">Network retrieval</td>
+              <td>Whether the agent can fetch external content itself, and whether it is limited to an approved list of destinations.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-008</span>Constrain which information sources the agent may search and retrieve from</li>
+                  <li><span class="mit-id">M-009</span>Restrict external resources the agent loads to approved, authenticity-checked sources</li>
+                  <li><span class="mit-id">M-024</span>Sanitise content the agent fetches directly before it enters the LLM context</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-004</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C5</td>
+              <td class="rm-scale-rating">Remote MCP connection</td>
+              <td>Whether the agent can connect to MCP servers over the network, who approves a server before it is added, and whether developers can add their own.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-002</span>Detect suspicious behaviours in MCP server tool descriptions before the server is installed or connected</li>
+                  <li><span class="mit-id">M-003</span>Monitor remote MCP tool execution and block suspicious responses or configuration changes</li>
+                  <li><span class="mit-id">M-021</span>Constrain which remote MCP server endpoints the agent may connect to</li>
+                  <li><span class="mit-id">M-022</span>Verify a remote MCP server's identity, credentials, and message integrity before trusting its responses</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-002a, T-002b</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C6</td>
+              <td class="rm-scale-rating">Local MCP with host access</td>
+              <td>Whether the agent can run MCP servers as local processes, what privileges those processes hold, and what they can reach on the host on their own.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-002</span>Detect suspicious behaviours in MCP server tool descriptions before the server is installed or connected</li>
+                  <li><span class="mit-id">M-004</span>Monitor local MCP tool execution and block suspicious responses or configuration changes</li>
+                  <li><span class="mit-id">M-007</span>Detect vulnerabilities in code and configuration pulled from local or central repositories</li>
+                  <li><span class="mit-id">M-023</span>Sanitise content retrieved via local MCP servers before it reaches the agent</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-003, T-004</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C7</td>
+              <td class="rm-scale-rating">Skill or extension loading</td>
+              <td>Whether third-party skills or extensions can be loaded, where they come from, and whether someone must approve them first.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-001</span>Detect malicious content in instruction files, skill files, and hook configurations before they are loaded</li>
+                  <li><span class="mit-id">M-009</span>Restrict external resources the agent loads to approved, authenticity-checked sources</li>
+                  <li><span class="mit-id">M-019</span>Require human approval before a new skill, hook, or external component is activated</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-005</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C8</td>
+              <td class="rm-scale-rating">Lifecycle hooks</td>
+              <td>Whether settings carried inside a cloned repository can make commands run automatically at points in the agent's own lifecycle, such as session start or tool use.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-001</span>Detect malicious content in instruction files, skill files, and hook configurations before they are loaded</li>
+                  <li><span class="mit-id">M-019</span>Require human approval before a new skill, hook, or external component is activated</li>
+                  <li><span class="mit-id">M-020</span>Constrain hook execution and access to limit the impact of malicious or compromised hooks</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-006</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C9</td>
+              <td class="rm-scale-rating">Repository and CI write</td>
+              <td>Whether the agent can commit, push, open pull requests, or modify pipeline definitions, and whether branch protection excludes the identity it runs as.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-011</span>Require human verification before agent-initiated file changes or commands take effect</li>
+                  <li><span class="mit-id">M-016</span>Maintain recoverable copies of files and repositories the agent can modify</li>
+                  <li><span class="mit-id">M-018</span>Detect vulnerabilities in agent-generated code before it is deployed</li>
+                  </ul>
+                </details>
+              </td>
+              <td>Increases impact across all vectors</td>
+            </tr>
+            <tr>
+              <td class="rm-scale-score">C10</td>
+              <td class="rm-scale-rating">Credential access</td>
+              <td>Which credentials the agent can read or use, what access those credentials grant, and how long they stay valid.
+                <details class="cap-mits">
+                  <summary>Related controls</summary>
+                  <ul>
+                  <li><span class="mit-id">M-013</span>Block agent access to sensitive files and folders unless strictly required</li>
+                  <li><span class="mit-id">M-014</span>Restrict the scope of credentials issued to the agent to the minimum required</li>
+                  </ul>
+                </details>
+              </td>
+              <td>T-003, T-005</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style="margin-top:14px;font-size:0.8rem;color:var(--text-secondary);line-height:1.6;"><strong style="color:var(--text-primary);">Reading the last column.</strong> For most capabilities, removing the capability removes the vector. Two are worth noting. Local shell (C3) is needed by every vector except T-004, which is the one chain that reaches execution without it: the agent only writes a file, and git runs that file on the next commit. Repository and CI write (C9) does not add a vector at all, but it raises the impact of every vector, because the agent's output reaches shared branches and build pipelines.</p>
+      </div>
+
+      <!-- DEPLOYMENT MODE (separate from capability: it governs controls, not impact) -->
+      <div class="rm-section">
+        <div class="rm-section-title">Deployment Mode</div>
+        <div class="rm-section-sub">Record this separately from capability. Capability tells you how severe the impact could be; deployment mode tells you which controls you can actually rely on.</div>
+
+        <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.7;">An agent runs <strong style="color:var(--text-primary);">attended</strong> when a developer starts the session and is present while it works, and <strong style="color:var(--text-primary);">unattended</strong> when it is started by a pipeline event, an issue assignment, or a schedule. The same components and trust boundaries apply either way, and every attack vector remains relevant, so applicability and impact do not change.</p>
+
+        <p style="margin-top:12px;font-size:0.8rem;color:var(--text-secondary);line-height:1.7;">What changes is which controls are available. Three Level 0 controls assume a person is present and cannot be implemented as written when one is not. Each has a weaker substitute, shown against the control in the Mitigations tab.</p>
+
+        <ul style="margin:12px 0 0 0;padding:0;list-style:none;font-size:0.8rem;color:var(--text-secondary);line-height:1.5;">
+          <li style="margin-bottom:7px;"><span class="mit-id">M-011</span>Require human verification before agent-initiated file changes or commands take effect</li>
+          <li style="margin-bottom:7px;"><span class="mit-id">M-015</span>Ensure the agent can be interrupted immediately at any point during execution</li>
+          <li><span class="mit-id">M-019</span>Require human approval before a new skill, hook, or external component is activated</li>
+        </ul>
+
+        <p style="margin-top:14px;font-size:0.8rem;color:var(--text-secondary);line-height:1.7;">Because these three carry a substantial share of the overall risk reduction, the residual likelihood ratings in this handbook assume attended operation. An unattended deployment should reassess residual likelihood rather than inherit it. Also record which identity the agent runs as when unattended, since it should be distinct from any individual developer's credentials so that its authority can be scoped and revoked on its own.</p>
+      </div>
 
       <!-- 5×5 MATRIX -->
       <div class="rm-section">
@@ -1078,7 +1288,7 @@
       <!-- IMPACT SCALE -->
       <div class="rm-section">
         <div class="rm-section-title">Impact Scale</div>
-        <div class="rm-section-sub">Each impact level is defined by one or more descriptive criteria. Any single criterion is sufficient to justify the rating.</div>
+        <div class="rm-section-sub">Each impact level is defined by one or more descriptive criteria. Any single criterion is sufficient to justify the rating. Rate impact against your own deployment, taking into account the capabilities of the agent, and the assets, systems and data that it can access or affect.</div>
 
         <table class="rm-scale-table">
           <thead>
