@@ -783,7 +783,7 @@
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <div style="font-size:0.72rem;font-weight:700;color:#7a8199;background:#eef0f4;padding:3px 10px;border-radius:4px;flex-shrink:0;margin-top:1px;width:130px;text-align:center;">Risk Assessment</div>
-            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Provides the reference 5×5 impact × likelihood risk matrix and the scoring scales used to rate the severity of each attack vector. Consult this tab when assigning or reviewing a risk rating for a specific threat scenario.</div>
+            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7;">Provides the reference 5×5 impact × likelihood risk matrix and the scoring scales used to rate the severity of each attack vector. Opens with a capability checklist, as the capabilities available to an agent determine which attack vectors are relevant and how far their consequences reach. Consult this tab when assigning or reviewing a risk rating for a specific threat scenario.</div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
             <div style="font-size:0.72rem;font-weight:700;color:#b45309;background:#fef3c7;padding:3px 10px;border-radius:4px;flex-shrink:0;margin-top:1px;width:130px;text-align:center;">FAQ</div>
@@ -1008,7 +1008,7 @@
   <!-- ═══ TAB: RISK ASSESSMENT ═══ -->
   <div class="tab-panel" id="panel-risk-assessment">
     <div class="pane-title">Risk Assessment</div>
-    <div class="pane-desc">This tab provides the reference risk matrix and scoring scales for rating the severity of the attack vectors identified in this handbook. Combine an <strong>impact</strong> score with a <strong>likelihood</strong> score to arrive at a risk rating (Low, Medium, Medium-High, or High) for a given attack scenario.<br><br><strong>Note on unattended deployments:</strong> the residual likelihood ratings assigned to each attack vector assume an attended deployment with a developer present during the session. Where an agent runs unattended, three Level 0 controls are replaced by weaker compensating substitutes: <a class="mit-link" onclick="gotoMitigation('Require human verification before agent-initiated file changes or commands take effect');return false;">M-011 human verification</a>, <a class="mit-link" onclick="gotoMitigation('Ensure the agent can be interrupted immediately at any point during execution');return false;">M-015 immediate interruptibility</a>, and <a class="mit-link" onclick="gotoMitigation('Require human approval before a new skill, hook, or external component is activated');return false;">M-019 approval before activation</a>. Residual likelihood should be reassessed upward accordingly rather than inherited from this handbook.</div>
+    <div class="pane-desc">This tab provides the reference risk matrix and scoring scales for rating the severity of the attack vectors identified in this handbook. Combine an <strong>impact</strong> score with a <strong>likelihood</strong> score to arrive at a risk rating (Low, Medium, Medium-High, or High) for a given attack scenario.</div>
 
     <div class="attack-overview">
       <h3>How to rate a risk</h3>
@@ -1019,7 +1019,7 @@
         <li><strong>Determine inherent risk.</strong> Use the risk matrix to determine the inherent risk rating from the assessed impact and likelihood, before taking controls into account.</li>
         <li><strong>Apply recommended mitigations and determine residual risk.</strong> Apply the relevant controls from the Mitigations tab and reassess the likelihood and impact, where applicable. Use the risk matrix to determine the residual risk and record both the inherent and residual risk ratings.</li>
       </ol>
-      <p style="margin-top:12px;font-size:0.875rem;color:var(--text-secondary);line-height:1.65;">Before working through these steps, use the Capability Checklist below to record what your agent can do. This determines which attack vectors apply to your deployment and how far their consequences reach.</p>
+      <p style="margin-top:12px;font-size:0.875rem;color:var(--text-secondary);line-height:1.65;">Before working through these steps, use the Capability Checklist below to record the capabilities of the agent in your deployment. These determine which attack vectors are relevant and how far their consequences reach.</p>
     </div>
 
     <div class="rm-wrap">
@@ -1027,7 +1027,7 @@
       <!-- CAPABILITY CHECKLIST -->
       <div class="rm-section">
         <div class="rm-section-title">Capability Checklist</div>
-        <div class="rm-section-sub">What an agent can do matters more than where it runs. An agent inside a code editor that can run shell commands and load third-party extensions carries more risk than a command-line agent that cannot do either. Record what your agent can do here, then use those answers when assessing impact below.</div>
+        <div class="rm-section-sub">The capabilities available to an agent do not necessarily correlate with the environment in which it runs. An agent integrated into a code editor that can execute commands and load third-party extensions may be exposed to more attack vectors than a command-line agent without those capabilities. Record the capabilities of the agent in your deployment before assessing impact below.</div>
 
         <table class="rm-scale-table">
           <thead>
@@ -1373,6 +1373,7 @@
         </table>
 
         <p style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-mid);font-size:0.82rem;color:var(--text-secondary);"><strong style="color:var(--text-primary);">Non-determinism check:</strong> Where an attack depends on how the model responds to attacker-supplied content, the outcome is probabilistic, and the same attack can succeed on one run and fail on the next. This is why Complexity is scored on reliability of success rather than ease of attempt: an attack that only lands occasionally sits at Possible (3) or below, not Almost Certain. As more evidence accumulates through repeated trials, revise the level up or down accordingly.</p>
+        <p style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-mid);font-size:0.82rem;color:var(--text-secondary);"><strong style="color:var(--text-primary);">Unattended deployments:</strong> the residual likelihood ratings assigned to each attack vector assume an attended deployment with a developer present during the session. Where an agent runs unattended, three Level 0 controls are replaced by weaker compensating substitutes: <a class="mit-link" onclick="gotoMitigation('Require human verification before agent-initiated file changes or commands take effect');return false;">M-011 human verification</a>, <a class="mit-link" onclick="gotoMitigation('Ensure the agent can be interrupted immediately at any point during execution');return false;">M-015 immediate interruptibility</a>, and <a class="mit-link" onclick="gotoMitigation('Require human approval before a new skill, hook, or external component is activated');return false;">M-019 approval before activation</a>. Residual likelihood should be reassessed upward accordingly rather than inherited from this handbook.</p>
       </div>
 
     </div>
