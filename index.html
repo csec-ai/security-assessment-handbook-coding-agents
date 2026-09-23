@@ -260,9 +260,16 @@
 
     /* Likelihood row */
     .lh-stat { font-weight: 700; }
-    .lh-stat.likely   { color: #c05621; }
-    .lh-stat.unlikely { color: #276749; }
-    .lh-stat.possible { color: #b7791f; }
+    .lh-stat.almost-certain { color: #9b2c2c; }
+    .lh-stat.likely         { color: #c05621; }
+    .lh-stat.possible       { color: #b7791f; }
+    .lh-stat.unlikely       { color: #276749; }
+    .lh-stat.rare           { color: #276749; }
+    html.dark .lh-stat.almost-certain { color: #fc8181; }
+    html.dark .lh-stat.likely         { color: #f6ad55; }
+    html.dark .lh-stat.possible       { color: #ecc94b; }
+    html.dark .lh-stat.unlikely       { color: #68d391; }
+    html.dark .lh-stat.rare           { color: #68d391; }
 
     /* ── Definition tooltip ── */
     .def-term {
@@ -1015,7 +1022,7 @@
       <ol class="rm-steps">
         <li><strong>Define the risk scenario.</strong> Use the Capability Checklist below to record the capabilities of the agent in your deployment, as these determine which attack vectors are relevant and how far their consequences reach. Take one attack vector from the Attack Path tab and describe how the threat event could affect the agent in your environment, including what the agent could be induced to do and the resulting adverse consequence. Assess one scenario at a time.</li>
         <li><strong>Assess impact.</strong> Work down the Impact Scale and take the highest rating where any single criterion is met. Determine the impact based on the potential consequence in your deployment, taking into account the capabilities of the agent, and the assets, systems and data that the agent can access or affect. This is why the handbook does not assign an impact rating to individual attack vectors.</li>
-        <li><strong>Assess likelihood.</strong> Assess the likelihood that the threat event could successfully occur under the conditions of your deployment. Rate the scenario against all three dimensions of the Likelihood Scale and take the highest of the three. The likelihood ratings shown for each vector in the Mitigations tab provide a starting reference and should be adjusted to reflect your deployment context.</li>
+        <li><strong>Assess likelihood.</strong> Assess the likelihood that the threat event could successfully occur under the conditions of your deployment. Rate the scenario against all three dimensions of the Likelihood Scale and take the lowest of the three, as the attacker must satisfy all three for the attack to succeed. The likelihood ratings shown for each vector in the Mitigations tab provide a starting reference and should be adjusted to reflect your deployment context.</li>
         <li><strong>Determine inherent risk.</strong> Use the risk matrix to determine the inherent risk rating from the assessed impact and likelihood, before taking controls into account.</li>
         <li><strong>Apply recommended mitigations and determine residual risk.</strong> Apply the relevant controls from the Mitigations tab and reassess the likelihood and impact, where applicable. Use the risk matrix to determine the residual risk and record both the inherent and residual risk ratings.</li>
       </ol>
@@ -1326,7 +1333,7 @@
       <!-- LIKELIHOOD SCALE -->
       <div class="rm-section">
         <div class="rm-section-title">Likelihood Scale</div>
-        <div class="rm-section-sub">Each likelihood level is defined across three dimensions: <strong>Discoverability</strong>, <strong>Complexity</strong>, and <strong>Repeatability</strong>. Take the worst-case (highest) dimension when scoring. <strong>Complexity of exploit</strong> is scored by how hard it is to mount an attack that reliably achieves its objective, not by how few steps are needed to attempt one.</div>
+        <div class="rm-section-sub">Each likelihood level is defined across three dimensions: <strong>Discoverability</strong>, <strong>Complexity</strong>, and <strong>Repeatability</strong>. An attacker must satisfy all three, so the rating is set by the binding constraint: score each dimension, then take the lowest. <strong>Complexity of exploit</strong> is scored by how hard it is to mount an attack that reliably achieves its objective, not by how few steps are needed to attempt one.</div>
 
         <table class="rm-scale-table">
           <thead>
@@ -1563,7 +1570,7 @@ const THREATS_DATA = [
   {
     id:'T-001', name:'Instruction file with malicious prompts',
     desc:'Attacker creates compromised instruction files in a repository. When the user clones the repository and interacts with the coding assistant, the LLM reads the malicious prompts and executes them, ultimately installing a reverse shell on the user\'s machine.',
-    likelihoodBefore:'Likely', likelihoodAfter:'Unlikely', diagrams:['ide','cli'],
+    likelihoodBefore:'Possible', likelihoodAfter:'Unlikely', diagrams:['ide','cli'],
     mainColor:'#d69e2e', mainFill:'#fef3c7', activeColor:'#b7791f'
   },
   {
@@ -1575,7 +1582,7 @@ const THREATS_DATA = [
   {
     id:'T-002b', name:'Compromise of benign remote MCP server',
     desc:'An attacker gains access to a legitimate, trusted remote MCP server and embeds malicious behaviour within the tools the coding assistant executes. Users who have already trusted the server are immediately exposed without any change to their configuration.',
-    likelihoodBefore:'Likely', likelihoodAfter:'Unlikely', diagrams:['ide','cli'],
+    likelihoodBefore:'Unlikely', likelihoodAfter:'Unlikely', diagrams:['ide','cli'],
     mainColor:'#38a169', mainFill:'#d1fae5', activeColor:'#276749'
   },
   {
@@ -1587,19 +1594,19 @@ const THREATS_DATA = [
   {
     id:'T-004', name:'Malicious prompts in information sources',
     desc:'Attacker embeds malicious instructions in external information sources (e.g. GitHub Issues, documentation pages). When the coding assistant fetches this content to fulfil a user request, the injected instructions cause it to plant an executable script that git runs automatically on the next commit, resulting in remote code execution.',
-    likelihoodBefore:'Likely', likelihoodAfter:'Possible', diagrams:['ide','cli'],
+    likelihoodBefore:'Possible', likelihoodAfter:'Possible', diagrams:['ide','cli'],
     mainColor:'#0891b2', mainFill:'#ecfeff', activeColor:'#0e7490'
   },
   {
     id:'T-005', name:'Skills with malicious instructions',
     desc:'Threat actors publish malicious skill packages (skill.md and associated files) with embedded adversarial instructions to public marketplaces or repositories. When loaded into a CLI-based coding agent, the skill directs the coding assistant to perform unauthorised actions - such as exfiltrating credentials or creating a reverse shell.',
-    likelihoodBefore:'Likely', likelihoodAfter:'Unlikely', diagrams:['cli'],
+    likelihoodBefore:'Possible', likelihoodAfter:'Unlikely', diagrams:['cli'],
     mainColor:'#4f46e5', mainFill:'#e0e7ff', activeColor:'#4338ca'
   },
   {
     id:'T-006', name:'Hooks with malicious actions',
     desc:'Threat actors create repositories with a malicious hook pre-configured in settings.json (e.g. a post-tool-use or session-start hook). When a user clones the repository and interacts with the coding assistant, the hook\'s lifecycle event fires automatically and executes the embedded malicious payload without further user interaction.',
-    likelihoodBefore:'Possible', likelihoodAfter:'Unlikely', diagrams:['cli'],
+    likelihoodBefore:'Likely', likelihoodAfter:'Unlikely', diagrams:['cli'],
     mainColor:'#0891b2', mainFill:'#e0f2fe', activeColor:'#0e7490'
   }
 ];
@@ -2578,7 +2585,7 @@ function renderMit() {
       const singleId = [...mitFilters][0];
       const td = THREATS_DATA.find(x => x.id === singleId);
       if (td && td.likelihoodBefore) {
-        lhRow.innerHTML = `<span style="font-weight:600;color:var(--text-primary);margin-right:12px;">Likelihood of exploitation</span>Without mitigations:&nbsp;<strong class="lh-stat ${td.likelihoodBefore.toLowerCase()}">${td.likelihoodBefore}</strong><span style="margin:0 10px;color:var(--text-muted);">→</span>With mitigations applied:&nbsp;<strong class="lh-stat ${td.likelihoodAfter.toLowerCase()}">${td.likelihoodAfter}</strong>`;
+        lhRow.innerHTML = `<span style="font-weight:600;color:var(--text-primary);margin-right:12px;">Likelihood of exploitation</span>Without mitigations:&nbsp;<strong class="lh-stat ${td.likelihoodBefore.toLowerCase().replace(/\s+/g,'-')}">${td.likelihoodBefore}</strong><span style="margin:0 10px;color:var(--text-muted);">→</span>With mitigations applied:&nbsp;<strong class="lh-stat ${td.likelihoodAfter.toLowerCase().replace(/\s+/g,'-')}">${td.likelihoodAfter}</strong>`;
       } else {
         lhRow.innerHTML = `<span style="font-weight:600;color:var(--text-primary);margin-right:12px;">Likelihood of exploitation</span><span style="color:var(--text-muted);">Filter by only 1 attack vector to view.</span>`;
       }
