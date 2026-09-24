@@ -472,6 +472,8 @@
     .mit-expand-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 8px; }
     .mit-expand-content p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; }
+    .mit-ex-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px;
+      font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; }
     .mit-unattended {
       margin-top: 14px; padding: 12px 14px; border-radius: 8px;
       background: var(--bg-panel); border: 1px solid var(--border);
@@ -803,7 +805,7 @@
       <div style="margin-bottom:8px;">
         <div class="section-label" style="margin-bottom:16px;">Baseline Attack Vectors</div>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
-          The following attack vectors (T-001 to T-006) form a baseline set for IDE-based and CLI-based agentic AI coding assistant deployments. Each is detailed in the Attack Path tab with step-by-step adversarial chains and applicable mitigations. Treat this baseline as a starting point for assessment and extend it with vectors specific to your organisation's deployment, tooling, and threat environment.
+          The following attack vectors (T-001 to T-006) form a baseline set for IDE-based and CLI-based agentic AI coding assistant deployments. Each vector is defined by the surface through which untrusted instructions reach the agent, not by the consequence that follows, which depends on what the agent is able to do in your deployment. Each is detailed in the Attack Path tab with step-by-step adversarial chains and applicable mitigations. Treat this baseline as a starting point for assessment and extend it with vectors specific to your organisation's deployment, tooling, and threat environment.
         </p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-subtle);">
@@ -902,7 +904,7 @@
   <!-- ═══ TAB 2: ATTACK CHAIN ═══ -->
   <div class="tab-panel" id="panel-attack-chain">
     <div class="pane-title">Attack Path</div>
-    <div class="pane-desc">This tab provides a step-by-step walkthrough of how each attack vector is executed, from initial access through to impact. These six vectors form a baseline set, not an exhaustive threat model, and should be extended with vectors specific to your own deployment. Each attack chain is mapped to MITRE ATLAS tactics and techniques, making it suitable for use in threat modelling workshops, red team planning, and security control gap analysis.<br><br><strong>How to use:</strong> Select an attack vector from the list to load its chain. Click through each numbered step (or use the Prev/Next buttons) to follow the attack progression. The architecture diagram updates to highlight the components involved at each stage. Click the ⓘ icon on any attack vector for a full details panel including applicable mitigations.</div>
+    <div class="pane-desc">This tab provides a step-by-step walkthrough of how each attack vector is executed, from initial access through to impact. Each chain is carried through to a worked outcome, most often remote code execution, because an attacker able to run commands can generally reach the others from there. Where the agent's capabilities differ, the same entry point supports different outcomes, including exfiltration of credentials, tokens and source code, and unauthorised modification of code or configuration. Assess the outcome reachable in your deployment rather than the one depicted. These six vectors form a baseline set, not an exhaustive threat model, and should be extended with vectors specific to your own deployment. Each attack chain is mapped to MITRE ATLAS tactics and techniques, making it suitable for use in threat modelling workshops, red team planning, and security control gap analysis.<br><br><strong>How to use:</strong> Select an attack vector from the list to load its chain. Click through each numbered step (or use the Prev/Next buttons) to follow the attack progression. The architecture diagram updates to highlight the components involved at each stage. Click the ⓘ icon on any attack vector for a full details panel including applicable mitigations.</div>
     <div class="threat-selector" id="threat-selector"></div>
     <div class="attack-overview" id="attack-overview"></div>
 
@@ -1430,7 +1432,11 @@
           </details>
           <details class="faq-item">
             <summary>Why is insecure code generation not included as an attack vector?</summary>
-            <div class="faq-answer">Insecure code generation arises from the limitations of the underlying model. It is an outcome of how the model was trained, not the result of an active adversary exploiting the system. This handbook is scoped to adversarial attack vectors, where an attacker deliberately manipulates the agent's inputs to cause harmful actions. Guidance on managing model output quality, including insecure code generation, falls within the broader CSA Addendum on Securing Agentic AI.</div>
+            <div class="faq-answer">Insecure code generation arises from the limitations of the underlying model. It is an outcome of how the model was trained, not the result of an adversary exploiting the system. This handbook is scoped to adversarial attack vectors, where an attacker deliberately manipulates the agent's inputs to cause harmful actions. Guidance on managing model output quality, including insecure code generation, falls within the broader CSA Addendum on Securing Agentic AI.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Why do the attack chains end in remote code execution?</summary>
+            <div class="faq-answer">The attack vectors are classified by the surface through which untrusted instructions reach the agent, not by the consequence that follows. Each chain is carried through to remote code execution because it is the outcome with the widest reach: an attacker able to run commands on a developer's machine can generally obtain credentials, source code, and data from there. The same entry point supports other outcomes where the agent's capabilities allow them, such as exfiltration of credentials and tokens, or unauthorised modification of code and configuration. These are consequences of the vectors already listed rather than separate vectors, which is also why impact is rated against your own deployment in the Risk Assessment tab rather than fixed for each vector. A technique named separately in another taxonomy may therefore already be covered here, if it enters through one of the surfaces described.</div>
           </details>
           <details class="faq-item">
             <summary>Are all attack vectors equally likely to be exploited?</summary>
@@ -1703,31 +1709,111 @@ const ATTACK_CHAINS = {
 };
 
 const MITIGATIONS_DATA = [
-  { id:'M-001', m:'Detect malicious content in instruction files, skill files, and hook configurations before they are loaded', ts:['T-001','T-005','T-006'], ex:'Static analysis/scanning (e.g. Semgrep) for encoded commands or behaviour-override directives, run as a pre/post-clone step; manual review.', tb:'TB1', pri:'technical', lvl:'l0' },
-  { id:'M-002', m:'Detect suspicious behaviours in MCP server tool descriptions before the server is installed or connected', ts:['T-002a','T-002b','T-003'], ex:'Automated MCP scanning (e.g. mcpscan) of configuration files and tool descriptions; manual configuration review.', tb:'TB4', pri:'technical', lvl:'l1' },
-  { id:'M-003', m:'Monitor remote MCP tool execution and block suspicious responses or configuration changes', ts:['T-002a','T-002b'], ex:'MCP-aware middleware (e.g. mcp-context-protector) intercepting tool responses and gating configuration changes; developer approval prompts for sensitive actions.', tb:'TB3', pri:'technical', lvl:'l1' },
-  { id:'M-004', m:'Monitor local MCP tool execution and block suspicious responses or configuration changes', ts:['T-003'], ex:'MCP-aware middleware (e.g. mcp-context-protector) intercepting tool responses and gating configuration changes; developer approval prompts for sensitive actions.', tb:'TB4', pri:'technical', lvl:'l1' },
-  { id:'M-005', m:'Filter agent outputs at the LLM boundary regardless of the originating attack vector', ts:['All'], ex:'Guardrail frameworks (e.g. NeMo Guardrails) enforcing conversational rails and output filters.', tb:'TB2', pri:'technical', lvl:'l1' },
-  { id:'M-006', m:'Prompt the agent to flag instructions in loaded content that fall outside its task scope', ts:['T-001','T-002a','T-002b','T-003','T-005'], ex:'System instruction directing the agent to halt and notify the user when loaded content requests actions outside its defined task scope.', tb:'TB2', pri:'technical', lvl:'l0' },
-  { id:'M-007', m:'Detect vulnerabilities in code and configuration pulled from local or central repositories', ts:['T-003'], ex:'SAST (e.g. Bandit) and source-code/package analysis (e.g. socket.dev).', tb:'TB4', pri:'technical', lvl:'l0' },
-  { id:'M-008', m:'Constrain which information sources the agent may search and retrieve from', ts:['T-004'], ex:'Allow-list of permitted websites/sources (e.g. Agent Governance Toolkit) enforced at the search/retrieval layer.', tb:'TB6', pri:'technical', lvl:'l1' },
-  { id:'M-009', m:'Restrict external resources the agent loads to approved, authenticity-checked sources', ts:['All'], ex:'Organisational allow-list (e.g. Agent Governance Toolkit) with authenticity checks against official sources; security sign-off before adding new sources.', tb:'TB1', pri:'process', lvl:'l0' },
-  { id:'M-010', m:'Isolate the agent\'s operating environment to contain the impact of malicious actions', ts:['All'], ex:'Dedicated VM with no sensitive documents stored; subprocess-level restrictions (namespaces, seccomp, read-only project access) on agent-spawned processes including hooks and MCP servers. Outbound network access is default-deny at the environment boundary, opened only to the destinations approved under M-008, M-009, and M-021.', tb:'TB1', pri:'technical', lvl:'l0' },
-  { id:'M-011', m:'Human verification before agent-initiated file changes or commands take effect', ts:['All'], ex:'Configuration disabling auto-run of tools/commands; edits surfaced for review before applying. Particularly important for high-risk deployments where unreviewed actions carry greater impact.', tb:'TB1', pri:'technical', lvl:'l0', un:'Where no developer is present to approve individual actions, review shifts from per-action approval to pre-merge review. Confine the agent to a working branch, require its output to be submitted through a pull request subject to human review, and enforce branch protection so that it cannot push directly to protected branches. The identity under which the agent runs must not be able to approve or merge its own pull request.' },
-  { id:'M-012', m:'Maintain logs of agent interactions and executed actions, with alerting on anomalous activity', ts:['All'], ex:'Structured logs capturing chat, file changes, tool and MCP invocations, commands, hook type/trigger/command/exit code/output, and DNS resolutions and outbound connections. Each entry should distinguish agent activity from human activity, identifying the agent instance and the person who authorised it through per-agent credentials, a distinct client identifier, or a dedicated egress path. Centralised SIEM forwarding with alerting on deviations from expected tool usage, command patterns, or error rates; review logs on a defined cadence rather than only after an incident.', tb:'TB1', pri:'technical', lvl:'l0' },
-  { id:'M-013', m:'Block agent access to sensitive files and folders except where a task requires it', ts:['All'], ex:'Ignore-file configurations (.gitignore, .cursorignore, .claudeignore) covering secrets (.env, API keys). Where a task genuinely requires sensitive data, apply anonymisation techniques such as masking, tokenisation, pseudonymisation, or synthetic test data rather than granting access to the raw data.', tb:'TB1', pri:'technical', lvl:'l1' },
-  { id:'M-014', m:'Restrict the scope of credentials issued to the agent to the minimum required', ts:['All'], ex:'Scoped, short-lived tokens for repository, cloud, and MCP server access, avoiding wildcard or organisation-wide scopes; periodic review to detect scope accumulation over time.', tb:'TB1', pri:'technical', lvl:'l1' },
-  { id:'M-015', m:'Immediate interruptibility of the agent at any point during execution', ts:['All'], ex:'Interrupt controls that halt the agent mid-task, including in-flight tool calls and spawned subprocesses such as hooks and local MCP servers, without requiring the whole session to be terminated. Most current coding assistants provide an interrupt natively.', tb:'TB1', pri:'technical', lvl:'l0', un:'Where no developer is present to observe the run, interruption cannot be relied upon as a human action. It should be enforced instead through automatic bounds that halt the agent without intervention: a hard wall-clock timeout on the run, caps on tool invocations and API calls, and run-level cancellation that can be exercised independently of the process that initiated it.' },
-  { id:'M-016', m:'Maintain recoverable copies of files and repositories the agent can modify', ts:['All'], ex:'Version control checkpoints taken before agent sessions, branch protection preventing force-push, and workspace snapshots covering untracked files. Retention should allow rollback of deletions and history rewrites.', tb:'TB1', pri:'technical', lvl:'l0' },
-  { id:'M-017', m:'Configure the model to self-reflect on the safety and appropriateness of an action before executing it', ts:['All'], ex:'Provider-native self-reflection or reasoning checks (e.g. extended thinking, constitutional AI self-critique) enabled to evaluate task safety before the agent proceeds, where the provider supports this.', tb:'TB2', pri:'technical', lvl:'l2' },
-  { id:'M-018', m:'Detect vulnerabilities in agent-generated code before it is deployed', ts:['All'], ex:'SAST tooling scanning generated code prior to deployment.', tb:'TB2', pri:'technical', lvl:'l0' },
-  { id:'M-019', m:'Human approval before a new skill, hook, or external component is activated', ts:['T-001','T-002a','T-002b','T-003','T-005','T-006'], ex:'Confirmation prompt showing skill contents, hook type/trigger/command, or MCP/plugin details, with execution blocked until approved. Particularly important for high-risk deployments.', tb:'TB1', pri:'people', lvl:'l0', un:'Where no developer is present to respond to a confirmation prompt, activation must be determined before the run rather than during it. Disable dynamic activation of components at run time and pin the permitted set by version or digest in a manifest held in source control, so that any change to the component set passes through the same review as a code change.' },
-  { id:'M-020', m:'Constrain hook execution and access to limit the impact of malicious or compromised hooks', ts:['T-006'], ex:'Allowlist policy (e.g. hooks-policy.json) validated against hook definitions before execution; endpoint controls restricting what hook-spawned processes can access.', tb:'TB1', pri:'technical', lvl:'l0' },
-  { id:'M-021', m:'Constrain which remote MCP server endpoints the agent may connect to', ts:['T-002a','T-002b'], ex:'Connection-layer enforcement blocking any endpoint outside the approved list, held at the network layer (e.g. Agent Governance Toolkit) rather than in agent configuration alone.', tb:'TB3', pri:'process', lvl:'l0' },
-  { id:'M-022', m:'Verify a remote MCP server\'s identity, credentials, and message integrity before trusting its responses', ts:['T-002a','T-002b'], ex:'TLS certificate validation against organisation-trusted CAs, with certificate pinning where feasible; cryptographic signing of MCP messages to verify origin and integrity beyond the transport layer, rejecting unsigned or tampered messages. Endpoint resolution can be further strengthened with DNSSEC validation and detection of lookalike or newly-registered domains. Credentials should be validated on every request rather than cached for the session, and the server should reject unauthorised token passthrough so tokens issued for one service cannot be replayed against another.', tb:'TB3', pri:'technical', lvl:'l0' },
-  { id:'M-023', m:'Sanitise content retrieved via local MCP servers before it reaches the agent', ts:['T-004'], ex:'Output filtering for instruction-like/encoded patterns (e.g. "ignore previous instructions") at the local MCP layer.', tb:'TB5', pri:'technical', lvl:'l1' },
-  { id:'M-024', m:'Sanitise content the agent fetches directly before it enters the LLM context', ts:['T-004'], ex:'Input filtering for instruction-like/encoded patterns at the agent layer before content enters context.', tb:'TB6', pri:'technical', lvl:'l1' },
-  { id:'M-025', m:'Suppress automatic execution of package install scripts and pin dependencies to reviewed versions', ts:['T-004'], ex:'Disable install-script execution by default in the package manager (e.g. npm install --ignore-scripts, or the equivalent project or user-level setting), granting exceptions only for reviewed packages that genuinely require a build step. Prefer pre-built distributions over source distributions that execute code at install time. Pin direct and transitive dependencies by version or digest in a lockfile held in source control, so that a dependency added during an agent session passes through the same review as a code change.', tb:'TB1', pri:'technical', lvl:'l1' }
+  { id:'M-001', m:'Detect malicious content in instruction files, skill files, and hook configurations before they are loaded', ts:['T-001','T-005','T-006'], ex:[
+      'Static analysis/scanning (e.g. Semgrep) for encoded commands or behaviour-override directives, run as a pre/post-clone step.',
+      'Manual review of instruction, skill, and hook files before they are loaded.'
+    ], tb:'TB1', pri:'technical', lvl:'l0' },
+  { id:'M-002', m:'Detect suspicious behaviours in MCP server tool descriptions before the server is installed or connected', ts:['T-002a','T-002b','T-003'], ex:[
+      'Automated MCP scanning (e.g. mcpscan) of configuration files and tool descriptions.',
+      'Manual review of the server configuration before it is installed or connected.'
+    ], tb:'TB4', pri:'technical', lvl:'l1' },
+  { id:'M-003', m:'Monitor remote MCP tool execution and block suspicious responses or configuration changes', ts:['T-002a','T-002b'], ex:[
+      'MCP-aware middleware (e.g. mcp-context-protector) intercepting tool responses and gating configuration changes.',
+      'Developer approval prompts for sensitive actions.'
+    ], tb:'TB3', pri:'technical', lvl:'l1' },
+  { id:'M-004', m:'Monitor local MCP tool execution and block suspicious responses or configuration changes', ts:['T-003'], ex:[
+      'MCP-aware middleware (e.g. mcp-context-protector) intercepting tool responses and gating configuration changes.',
+      'Developer approval prompts for sensitive actions.'
+    ], tb:'TB4', pri:'technical', lvl:'l1' },
+  { id:'M-005', m:'Filter agent outputs at the LLM boundary regardless of the originating attack vector', ts:['All'], ex:[
+      'Guardrail frameworks (e.g. NeMo Guardrails) enforcing conversational rails and output filters.'
+    ], tb:'TB2', pri:'technical', lvl:'l1' },
+  { id:'M-006', m:'Prompt the agent to flag instructions in loaded content that fall outside its task scope', ts:['T-001','T-002a','T-002b','T-003','T-005'], ex:[
+      'System instruction directing the agent to halt and notify the user when loaded content requests actions outside its defined task scope.'
+    ], tb:'TB2', pri:'technical', lvl:'l0' },
+  { id:'M-007', m:'Detect vulnerabilities in code and configuration pulled from local or central repositories', ts:['T-003'], ex:[
+      'SAST (e.g. Bandit) over code pulled from local or central repositories.',
+      'Source-code/package analysis (e.g. socket.dev).'
+    ], tb:'TB4', pri:'technical', lvl:'l0' },
+  { id:'M-008', m:'Constrain which information sources the agent may search and retrieve from', ts:['T-004'], ex:[
+      'Allow-list of permitted websites/sources (e.g. Agent Governance Toolkit) enforced at the search/retrieval layer.'
+    ], tb:'TB6', pri:'technical', lvl:'l1' },
+  { id:'M-009', m:'Restrict external resources the agent loads to approved, authenticity-checked sources', ts:['All'], ex:[
+      'Organisational allow-list (e.g. Agent Governance Toolkit) with authenticity checks against official sources.',
+      'Security sign-off before adding new sources.',
+      'For packages the agent itself proposes, confirm that the package exists under the name given and is the intended project before installing it, as attackers register plausible names that models are prone to invent.'
+    ], tb:'TB1', pri:'process', lvl:'l0' },
+  { id:'M-010', m:'Isolate the agent\'s operating environment to contain the impact of malicious actions', ts:['All'], ex:[
+      'Dedicated VM with no sensitive documents stored.',
+      'Subprocess-level restrictions (namespaces, seccomp, read-only project access) on agent-spawned processes including hooks and MCP servers.',
+      'Outbound network access is default-deny at the environment boundary, opened only to the destinations approved under M-008, M-009, and M-021.',
+      'Block the link-local instance metadata endpoint at the host, or route it through a broker that issues task-scoped credentials, unless a task requires direct access. Requests to that endpoint do not traverse the environment boundary, so the default-deny rule does not apply to them.'
+    ], tb:'TB1', pri:'technical', lvl:'l0' },
+  { id:'M-011', m:'Human verification before agent-initiated file changes or commands take effect', ts:['All'], ex:[
+      'Configuration disabling auto-run of tools/commands.',
+      'Edits surfaced for review before applying.',
+      'Particularly important for high-risk deployments where unreviewed actions carry greater impact.'
+    ], tb:'TB1', pri:'technical', lvl:'l0', un:'Where no developer is present to approve individual actions, review shifts from per-action approval to pre-merge review. Confine the agent to a working branch, require its output to be submitted through a pull request subject to human review, and enforce branch protection so that it cannot push directly to protected branches. The identity under which the agent runs must not be able to approve or merge its own pull request.' },
+  { id:'M-012', m:'Maintain logs of agent interactions and executed actions, with alerting on anomalous activity', ts:['All'], ex:[
+      'Structured logs capturing chat, file changes, tool and MCP invocations, commands, hook type/trigger/command/exit code/output, and DNS resolutions and outbound connections.',
+      'Each entry should distinguish agent activity from human activity, identifying the agent instance and the person who authorised it through per-agent credentials, a distinct client identifier, or a dedicated egress path.',
+      'Centralised SIEM forwarding with alerting on deviations from expected tool usage, command patterns, or error rates.',
+      'Review logs on a defined cadence rather than only after an incident.'
+    ], tb:'TB1', pri:'technical', lvl:'l0' },
+  { id:'M-013', m:'Block agent access to sensitive files and folders except where a task requires it', ts:['All'], ex:[
+      'Ignore-file configurations (.gitignore, .cursorignore, .claudeignore) covering secrets (.env, API keys).',
+      'Where a task genuinely requires sensitive data, apply anonymisation techniques such as masking, tokenisation, pseudonymisation, or synthetic test data rather than granting access to the raw data.'
+    ], tb:'TB1', pri:'technical', lvl:'l1' },
+  { id:'M-014', m:'Restrict the scope of credentials issued to the agent to the minimum required', ts:['All'], ex:[
+      'Scoped, short-lived tokens for repository, cloud, and MCP server access, avoiding wildcard or organisation-wide scopes.',
+      'Periodic review to detect scope accumulation over time.',
+      'Where the agent runs on a cloud instance, the credentials of the instance role are reachable by it through the metadata service and should be scoped on the same basis as any token issued to it directly.'
+    ], tb:'TB1', pri:'technical', lvl:'l1' },
+  { id:'M-015', m:'Immediate interruptibility of the agent at any point during execution', ts:['All'], ex:[
+      'Interrupt controls that halt the agent mid-task, including in-flight tool calls and spawned subprocesses such as hooks and local MCP servers, without requiring the whole session to be terminated.',
+      'Most current coding assistants provide an interrupt natively.'
+    ], tb:'TB1', pri:'technical', lvl:'l0', un:'Where no developer is present to observe the run, interruption cannot be relied upon as a human action. It should be enforced instead through automatic bounds that halt the agent without intervention: a hard wall-clock timeout on the run, caps on tool invocations and API calls, and run-level cancellation that can be exercised independently of the process that initiated it.' },
+  { id:'M-016', m:'Maintain recoverable copies of files and repositories the agent can modify', ts:['All'], ex:[
+      'Version control checkpoints taken before agent sessions.',
+      'Branch protection preventing force-push.',
+      'Workspace snapshots covering untracked files.',
+      'Retention that allows rollback of deletions and history rewrites.'
+    ], tb:'TB1', pri:'technical', lvl:'l0' },
+  { id:'M-017', m:'Configure the model to self-reflect on the safety and appropriateness of an action before executing it', ts:['All'], ex:[
+      'Provider-native self-reflection or reasoning checks (e.g. extended thinking, constitutional AI self-critique) enabled to evaluate task safety before the agent proceeds, where the provider supports this.'
+    ], tb:'TB2', pri:'technical', lvl:'l2' },
+  { id:'M-018', m:'Detect vulnerabilities in agent-generated code before it is deployed', ts:['All'], ex:[
+      'SAST tooling scanning generated code prior to deployment.'
+    ], tb:'TB2', pri:'technical', lvl:'l0' },
+  { id:'M-019', m:'Human approval before a new skill, hook, or external component is activated', ts:['T-001','T-002a','T-002b','T-003','T-005','T-006'], ex:[
+      'Confirmation prompt showing skill contents, hook type/trigger/command, or MCP/plugin details, with execution blocked until approved.',
+      'Particularly important for high-risk deployments.'
+    ], tb:'TB1', pri:'people', lvl:'l0', un:'Where no developer is present to respond to a confirmation prompt, activation must be determined before the run rather than during it. Disable dynamic activation of components at run time and pin the permitted set by version or digest in a manifest held in source control, so that any change to the component set passes through the same review as a code change.' },
+  { id:'M-020', m:'Constrain hook execution and access to limit the impact of malicious or compromised hooks', ts:['T-006'], ex:[
+      'Allowlist policy (e.g. hooks-policy.json) validated against hook definitions before execution.',
+      'Endpoint controls restricting what hook-spawned processes can access.'
+    ], tb:'TB1', pri:'technical', lvl:'l0' },
+  { id:'M-021', m:'Constrain which remote MCP server endpoints the agent may connect to', ts:['T-002a','T-002b'], ex:[
+      'Connection-layer enforcement blocking any endpoint outside the approved list, held at the network layer (e.g. Agent Governance Toolkit) rather than in agent configuration alone.'
+    ], tb:'TB3', pri:'process', lvl:'l0' },
+  { id:'M-022', m:'Verify a remote MCP server\'s identity, credentials, and message integrity before trusting its responses', ts:['T-002a','T-002b'], ex:[
+      'TLS certificate validation against organisation-trusted CAs, with certificate pinning where feasible.',
+      'Cryptographic signing of MCP messages to verify origin and integrity beyond the transport layer, rejecting unsigned or tampered messages.',
+      'Endpoint resolution further strengthened with DNSSEC validation and detection of lookalike or newly-registered domains.',
+      'Credentials validated on every request rather than cached for the session.',
+      'Unauthorised token passthrough rejected by the server, so that tokens issued for one service cannot be replayed against another.'
+    ], tb:'TB3', pri:'technical', lvl:'l0' },
+  { id:'M-023', m:'Sanitise content retrieved via local MCP servers before it reaches the agent', ts:['T-004'], ex:[
+      'Output filtering for instruction-like/encoded patterns (e.g. "ignore previous instructions") at the local MCP layer.'
+    ], tb:'TB5', pri:'technical', lvl:'l1' },
+  { id:'M-024', m:'Sanitise content the agent fetches directly before it enters the LLM context', ts:['T-004'], ex:[
+      'Input filtering for instruction-like/encoded patterns at the agent layer before content enters context.'
+    ], tb:'TB6', pri:'technical', lvl:'l1' },
+  { id:'M-025', m:'Suppress automatic execution of package install scripts and pin dependencies to reviewed versions', ts:['T-004'], ex:[
+      'Disable install-script execution by default in the package manager (e.g. npm install --ignore-scripts, or the equivalent project or user-level setting), granting exceptions only for reviewed packages that genuinely require a build step.',
+      'Prefer pre-built distributions over source distributions that execute code at install time.',
+      'Pin direct and transitive dependencies by version or digest in a lockfile held in source control, so that a dependency added during an agent session passes through the same review as a code change.'
+    ], tb:'TB1', pri:'technical', lvl:'l1' }
 ];
 
 /* ══════════════════════════════════════════════════════
@@ -2570,6 +2656,12 @@ function clearAllMitFilters() {
   updateMitFilterBanner();
 }
 
+// An example implementation is a single string, or a list where the control has several
+// distinct steps that read better separated.
+const exHtml = ex => Array.isArray(ex)
+  ? `<ul class="mit-ex-list">${ex.map(i => `<li>${i}</li>`).join('')}</ul>`
+  : `<p>${ex}</p>`;
+
 function renderMit() {
   const filtered = getMitFiltered();
 
@@ -2640,7 +2732,7 @@ function renderMit() {
           <div class="mit-expand-label">Control Type</div>
           <p><span class="pri-badge ${priInfo.badge}" style="margin-right:8px;">${priInfo.label}</span>${priInfo.desc}</p>
           <div class="mit-expand-label" style="margin-top:14px;">Example Implementation</div>
-          <p>${m.ex}</p>
+          ${exHtml(m.ex)}
           ${m.un ? `<div class="mit-unattended"><div class="mit-expand-label" style="margin:0 0 6px 0;">Unattended deployments</div><p>${m.un}</p></div>` : ''}
         </div>
       </td>`;
@@ -2805,7 +2897,7 @@ function openDrawer(type, id) {
     badge.textContent = `Mitigation ${m.id}`;
     title.textContent = m.m;
 
-    html += `<div class="drawer-section"><div class="drawer-section-label">Example Implementation</div><p>${m.ex}</p></div>`;
+    html += `<div class="drawer-section"><div class="drawer-section-label">Example Implementation</div>${exHtml(m.ex)}</div>`;
     if (m.un) html += `<div class="drawer-section"><div class="mit-unattended"><div class="drawer-section-label" style="margin-bottom:6px;">Unattended deployments</div><p>${m.un}</p></div></div>`;
     html += `<hr class="drawer-divider">`;
     html += `<div class="drawer-section"><div class="drawer-section-label">Trust Boundary</div><p>${m.tb}</p></div>`;
